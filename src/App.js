@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const GameStateContext = createContext();
 
@@ -130,6 +130,11 @@ const TypewriterText = ({ text }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    setDisplayedText('');
+    setCurrentIndex(0);
+  }, [text]);
+
+  useEffect(() => {
     if (currentIndex < text.length) {
       const timeout = setTimeout(() => {
         setDisplayedText(prev => prev + text[currentIndex]);
@@ -188,7 +193,7 @@ const PasswordModal = ({ onSuccess }) => {
         }}>ENTER IF YOU DARE</h2>
         <p style={{ color: '#9d7cc1', fontSize: '13px', fontFamily: 'monospace',
           letterSpacing: '2px', marginBottom: '24px', textTransform: 'uppercase'
-        }}>The Haunted Mansion Awaits</p>
+        }}>Echoes of the Estate</p>
         <p style={{ color: '#e0d4f7', marginBottom: '32px', lineHeight: '1.7',
           fontFamily: 'Special Elite, cursive', fontSize: '15px'
         }}>Eleanor's melancholic presence lingers in every shadow. Enter the password to unlock the mysteries.</p>
@@ -288,7 +293,11 @@ const AppContent = () => {
   if (!hasStarted) {
     return (
       <div style={{
-        minHeight: '100vh', background: 'radial-gradient(circle, #1a0b2e, #0d0221)',
+        minHeight: '100vh', 
+        background: 'linear-gradient(rgba(0,0,0,0.6), rgba(13,2,33,0.8)), url(https://i.imgur.com/U0t9EZn.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
         padding: '20px', fontFamily: 'Special Elite, cursive',
         display: 'flex', alignItems: 'center', justifyContent: 'center'
       }}>
