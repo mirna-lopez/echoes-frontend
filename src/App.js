@@ -13,37 +13,37 @@ const useGameState = () => {
 const ROOMS = {
   entrance: {
     id: 'entrance',
-    name: '🏚️ Grand Entrance Hall',
+    name: 'Grand Entrance Hall',
     description: 'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
     connections: ['library', 'dining', 'garden']
   },
   library: {
     id: 'library',
-    name: '📚 Forbidden Library',
+    name: 'Forbidden Library',
     description: 'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
     connections: ['entrance', 'study']
   },
   dining: {
     id: 'dining',
-    name: '🕯️ Cursed Dining Room',
+    name: 'Cursed Dining Room',
     description: 'A long table set for twelve ghostly guests. Cobwebs drape the corners like funeral shrouds.',
     connections: ['entrance', 'kitchen']
   },
   garden: {
     id: 'garden',
-    name: '🌹 Dead Garden',
+    name: 'Dead Garden',
     description: 'Withered roses choke the overgrown paths. The moon casts twisted shadows through gnarled trees.',
     connections: ['entrance']
   },
   study: {
     id: 'study',
-    name: '🖋️ Eleanor\'s Study',
+    name: 'Eleanor\'s Study',
     description: 'Personal journals lie scattered. A portrait watches with eyes that seem to follow you.',
     connections: ['library']
   },
   kitchen: {
     id: 'kitchen',
-    name: '🔪 Abandoned Kitchen',
+    name: 'Abandoned Kitchen',
     description: 'Rusted pots hang above a cold stove. Something dark stains the floor near the pantry.',
     connections: ['dining']
   }
@@ -173,34 +173,33 @@ const PasswordModal = ({ onSuccess }) => {
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      background: 'linear-gradient(rgba(0,0,0,0.7), rgba(13,2,33,0.9)), url(https://i.imgur.com/U0t9EZn.png)',
+      background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/U0t9EZn.png)',
       backgroundSize: 'cover', backgroundPosition: 'center',
       display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
       <div style={{
-        background: 'linear-gradient(135deg, rgba(45,27,61,0.85), rgba(26,11,46,0.85))',
+        background: 'linear-gradient(135deg, rgba(45,27,61,0.9), rgba(26,11,46,0.9))',
         padding: '48px', borderRadius: '16px', maxWidth: '500px', width: '90%',
         border: '3px solid #ff6b35', textAlign: 'center',
-        boxShadow: '0 20px 80px rgba(0,0,0,0.9)', backdropFilter: 'blur(15px)'
+        boxShadow: '0 20px 80px rgba(0,0,0,0.9)', backdropFilter: 'blur(10px)'
       }}>
-        <div style={{ fontSize: '80px', marginBottom: '20px' }}>🥀</div>
         <h2 style={{ 
-          color: '#ff6b35', marginTop: 0, fontSize: '42px',
+          color: '#ff6b35', marginTop: 0, fontSize: '48px',
           fontFamily: 'Creepster, cursive',
           textShadow: '0 0 30px rgba(255,107,53,0.8)',
-          letterSpacing: '4px', marginBottom: '8px'
-        }}>ENTER IF YOU DARE</h2>
+          letterSpacing: '4px', marginBottom: '12px'
+        }}>ECHOES OF THE ESTATE</h2>
         <p style={{ color: '#9d7cc1', fontSize: '13px', fontFamily: 'monospace',
           letterSpacing: '2px', marginBottom: '24px', textTransform: 'uppercase'
-        }}>Echoes of the Estate</p>
+        }}>The Haunted Mansion Awaits</p>
         <p style={{ color: '#e0d4f7', marginBottom: '32px', lineHeight: '1.7',
           fontFamily: 'Special Elite, cursive', fontSize: '15px'
         }}>Eleanor's melancholic presence lingers in every shadow. Enter the password to unlock the mysteries.</p>
         <input type="password" value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-          placeholder="🔑 Enter password..." disabled={isVerifying}
+          placeholder="Enter password..." disabled={isVerifying}
           style={{
             width: '100%', padding: '18px',
             background: 'linear-gradient(135deg, rgba(13,2,33,0.9), rgba(26,11,46,0.9))',
@@ -214,7 +213,7 @@ const PasswordModal = ({ onSuccess }) => {
             color: '#ff6b6b', fontSize: '14px', marginBottom: '16px',
             padding: '12px', background: 'rgba(255,107,107,0.15)',
             borderRadius: '8px', border: '1px solid #ff6b6b'
-          }}>⚠️ {error}</div>
+          }}>{error}</div>
         )}
         <button onClick={handleSubmit} disabled={isVerifying}
           style={{
@@ -224,10 +223,10 @@ const PasswordModal = ({ onSuccess }) => {
             cursor: isVerifying ? 'not-allowed' : 'pointer',
             fontSize: '20px', fontWeight: 'bold',
             fontFamily: 'Creepster, cursive', letterSpacing: '3px'
-          }}>{isVerifying ? '🌀 SUMMONING...' : '🚪 UNLOCK THE GATES 🚪'}</button>
+          }}>{isVerifying ? 'SUMMONING...' : 'UNLOCK THE GATES'}</button>
         <p style={{ color: '#9d7cc1', fontSize: '13px', marginTop: '24px',
           marginBottom: 0, fontFamily: 'monospace', opacity: 0.8
-        }}>💀 Hint: echoes + the current year</p>
+        }}>Hint: echoes + the current year</p>
       </div>
     </div>
   );
@@ -250,7 +249,7 @@ const AppContent = () => {
 
   const startGame = () => {
     setHasStarted(true);
-    addMessage('system', '⚡ Welcome to Echoes of the Estate. You sense a presence... 👻');
+    addMessage('system', 'Welcome to Echoes of the Estate. You sense a presence...');
   };
 
   const sendMessage = async () => {
@@ -294,7 +293,7 @@ const AppContent = () => {
     return (
       <div style={{
         minHeight: '100vh', 
-        background: 'linear-gradient(rgba(0,0,0,0.6), rgba(13,2,33,0.8)), url(https://i.imgur.com/U0t9EZn.png)',
+        background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/U0t9EZn.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
@@ -302,12 +301,20 @@ const AppContent = () => {
         display: 'flex', alignItems: 'center', justifyContent: 'center'
       }}>
         <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
-        <div style={{ maxWidth: '700px', textAlign: 'center' }}>
-          <div style={{ fontSize: '100px', marginBottom: '24px' }}>🥀</div>
+        <div style={{ 
+          maxWidth: '700px', 
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, rgba(45,27,61,0.85), rgba(26,11,46,0.85))',
+          padding: '60px 40px',
+          borderRadius: '16px',
+          border: '3px solid #ff6b35',
+          boxShadow: '0 20px 80px rgba(0,0,0,0.9)',
+          backdropFilter: 'blur(10px)'
+        }}>
           <h1 style={{
             color: '#ff6b35', fontSize: '64px', marginBottom: '16px',
             textShadow: '0 0 40px rgba(255,107,53,1)',
-            fontFamily: 'Creepster, cursive', letterSpacing: '4px'
+            fontFamily: 'Creepster, cursive', letterSpacing: '4px', marginTop: 0
           }}>ECHOES OF THE ESTATE</h1>
           <p style={{ color: '#ffd700', fontSize: '22px',
             fontFamily: 'Creepster, cursive', letterSpacing: '2px'
@@ -321,19 +328,19 @@ const AppContent = () => {
               background: demoServerStatus.online ? 'rgba(76,175,80,0.15)' : 'rgba(255,107,107,0.15)',
               border: `2px solid ${demoServerStatus.online ? '#4caf50' : '#ff6b6b'}`,
               color: demoServerStatus.online ? '#4caf50' : '#ff6b6b'
-            }}>{demoServerStatus.online ? '✅ SPIRITS ACTIVE' : '⚠️ SERVER OFFLINE'}</div>
+            }}>{demoServerStatus.online ? 'SPIRITS ACTIVE' : 'SERVER OFFLINE'}</div>
           )}
           <button onClick={startGame} style={{
             padding: '22px 56px', background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
             color: '#fff', border: 'none', borderRadius: '12px',
             fontSize: '24px', fontWeight: 'bold',
             fontFamily: 'Creepster, cursive', cursor: 'pointer'
-          }}>🚪 ENTER THE MANSION 🚪</button>
+          }}>ENTER THE MANSION</button>
           <div style={{ marginTop: '48px', padding: '16px',
             background: 'rgba(139,0,139,0.15)', borderRadius: '8px'
           }}>
             <p style={{ color: '#9d7cc1', fontSize: '13px', margin: 0 }}>
-              🎃 BUILD Halloween Hacks 2024 🎃
+              BUILD Halloween Hacks 2024
             </p>
           </div>
         </div>
@@ -343,36 +350,44 @@ const AppContent = () => {
 
   return (
     <div style={{
-      minHeight: '100vh', background: 'radial-gradient(circle, #1a0b2e, #0d0221)',
+      minHeight: '100vh', 
+      background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/U0t9EZn.png)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
       padding: '20px', fontFamily: 'Special Elite, cursive'
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
         <header style={{
           textAlign: 'center', marginBottom: '32px', padding: '24px',
-          background: 'linear-gradient(135deg, #2d1b3d, #1a0b2e)',
-          borderRadius: '12px', border: '2px solid #ff6b35'
+          background: 'linear-gradient(135deg, rgba(45,27,61,0.95), rgba(26,11,46,0.95))',
+          borderRadius: '12px', border: '2px solid #ff6b35',
+          backdropFilter: 'blur(10px)'
         }}>
           <h1 style={{
             color: '#ff6b35', fontSize: '48px', margin: 0,
             fontFamily: 'Creepster, cursive', letterSpacing: '3px'
-          }}>👻 ECHOES OF THE ESTATE 👻</h1>
+          }}>ECHOES OF THE ESTATE</h1>
         </header>
 
         <div style={{
-          padding: '24px', background: 'linear-gradient(135deg, #1a0b2e, #2d1b3d)',
-          borderRadius: '12px', marginBottom: '24px', border: '2px solid #ff6b35'
+          padding: '24px', 
+          background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(45,27,61,0.95))',
+          borderRadius: '12px', marginBottom: '24px', border: '2px solid #ff6b35',
+          backdropFilter: 'blur(10px)'
         }}>
           <h2 style={{ color: '#ff6b35', marginTop: 0, fontFamily: 'Creepster, cursive' }}>
             {ROOMS[currentRoom].name}
           </h2>
           <p style={{ color: '#e0d4f7' }}>{ROOMS[currentRoom].description}</p>
           <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,107,53,0.3)' }}>
-            <p style={{ color: '#9d7cc1', fontSize: '14px' }}>👣 Available paths:</p>
+            <p style={{ color: '#9d7cc1', fontSize: '14px' }}>Available paths:</p>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               {ROOMS[currentRoom].connections.map(roomId => (
                 <button key={roomId} onClick={() => moveToRoom(roomId)} style={{
-                  padding: '12px 20px', background: 'linear-gradient(135deg, #2d1b3d, #1a0b2e)',
+                  padding: '12px 20px', 
+                  background: 'linear-gradient(135deg, rgba(45,27,61,0.9), rgba(26,11,46,0.9))',
                   color: '#ff6b35', border: '2px solid #ff6b35', borderRadius: '8px',
                   cursor: 'pointer', fontSize: '14px'
                 }}>Go to {ROOMS[roomId].name}</button>
@@ -382,14 +397,16 @@ const AppContent = () => {
         </div>
 
         <div style={{
-          padding: '20px', background: 'linear-gradient(135deg, #1a0b2e, #2d1b3d)',
-          borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b'
+          padding: '20px', 
+          background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(45,27,61,0.95))',
+          borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b',
+          backdropFilter: 'blur(10px)'
         }}>
           <div style={{ marginBottom: '8px', color: '#9d7cc1', fontSize: '13px' }}>
-            💀 GHOST TRUST: {ghostTrust}%
+            GHOST TRUST: {ghostTrust}%
           </div>
           <div style={{
-            height: '24px', background: '#0d0221', borderRadius: '12px', overflow: 'hidden'
+            height: '24px', background: 'rgba(13,2,33,0.8)', borderRadius: '12px', overflow: 'hidden'
           }}>
             <div style={{
               height: '100%', width: `${ghostTrust}%`,
@@ -401,23 +418,24 @@ const AppContent = () => {
 
         <div style={{
           height: '350px', overflowY: 'auto', padding: '20px',
-          background: 'linear-gradient(180deg, #0d0221, #1a0b2e)',
-          borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b'
+          background: 'linear-gradient(180deg, rgba(13,2,33,0.95), rgba(26,11,46,0.95))',
+          borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b',
+          backdropFilter: 'blur(10px)'
         }}>
           <div style={{
-            background: 'rgba(139,0,139,0.2)', border: '1px solid #ff6b35',
+            background: 'rgba(139,0,139,0.3)', border: '1px solid #ff6b35',
             borderRadius: '8px', padding: '12px', marginBottom: '20px',
             fontSize: '13px', color: '#ffd700', textAlign: 'center'
-          }}>🎃 AI Powered by Claude 👻</div>
+          }}>AI Powered by Claude</div>
           {conversationHistory.map((msg, idx) => (
             <div key={idx} style={{
               marginBottom: '16px', padding: '14px',
-              background: msg.role === 'user' ? '#2d1b3d' : msg.role === 'assistant' ? '#1a0b2e' : '#8b008b',
+              background: msg.role === 'user' ? 'rgba(45,27,61,0.8)' : msg.role === 'assistant' ? 'rgba(26,11,46,0.8)' : 'rgba(139,0,139,0.6)',
               borderRadius: '10px',
               borderLeft: `4px solid ${msg.role === 'user' ? '#ff6b35' : msg.role === 'assistant' ? '#8b008b' : '#ffd700'}`
             }}>
               <div style={{ fontSize: '11px', color: '#9d7cc1', marginBottom: '6px' }}>
-                {msg.role === 'user' ? '👤 You' : msg.role === 'assistant' ? '🥀 Eleanor' : '⚡ System'}
+                {msg.role === 'user' ? 'You' : msg.role === 'assistant' ? 'Eleanor' : 'System'}
               </div>
               <div style={{ color: '#e0d4f7' }}>
                 {idx === conversationHistory.length - 1 && msg.role === 'assistant' ? (
@@ -432,12 +450,13 @@ const AppContent = () => {
           <input type="text" value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-            placeholder="👻 Speak to the ghost..." disabled={isLoading}
+            placeholder="Speak to the ghost..." disabled={isLoading}
             style={{
               flex: 1, padding: '16px',
-              background: 'linear-gradient(135deg, #1a0b2e, #0d0221)',
+              background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(13,2,33,0.95))',
               border: '2px solid #8b008b', borderRadius: '10px',
-              color: '#e0d4f7', fontSize: '15px'
+              color: '#e0d4f7', fontSize: '15px',
+              backdropFilter: 'blur(10px)'
             }} />
           <button onClick={sendMessage} disabled={isLoading} style={{
             padding: '16px 32px',
@@ -445,7 +464,7 @@ const AppContent = () => {
             color: '#fff', border: 'none', borderRadius: '10px',
             cursor: isLoading ? 'not-allowed' : 'pointer',
             fontSize: '15px', fontWeight: 'bold'
-          }}>{isLoading ? '⏳ Summoning...' : '📨 Send'}</button>
+          }}>{isLoading ? 'Summoning...' : 'Send'}</button>
         </div>
       </div>
     </div>
