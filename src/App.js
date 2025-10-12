@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const GameStateContext = createContext();
@@ -362,7 +361,7 @@ const App = () => {
 const AppContent = () => {
   const { addMessage, isAuthenticated, demoServerStatus, conversationHistory,
     isLoading, setIsLoading, demoPassword, currentRoom, ROOMS, ghostTrust,
-    adjustTrust, moveToRoom, isMusicMuted, toggleMute, startMusic, musicStarted } = useGameState();
+    adjustTrust, moveToRoom, isMusicMuted, toggleMute, startMusic } = useGameState();
   const [hasStarted, setHasStarted] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [input, setInput] = useState('');
