@@ -411,8 +411,6 @@ const AppContent = () => {
     }
   };
 
-  if (!isAuthenticated) return <PasswordModal onSuccess={startGame} show={showPasswordModal} />;
-
   if (!showPasswordModal && !isAuthenticated) {
     return (
       <div style={{
@@ -460,7 +458,7 @@ const AppContent = () => {
             fontFamily: 'Creepster, cursive',
             letterSpacing: '2px',
             marginBottom: '48px'
-          }}>A Haunted Tale Awaits</p>
+          }}>Eleanor's Mansion Awaits...</p>
           <button onClick={handleInitialClick} style={{
             padding: '28px 72px',
             background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
@@ -483,18 +481,15 @@ const AppContent = () => {
             e.target.style.transform = 'scale(1)';
             e.target.style.boxShadow = '0 10px 30px rgba(255,107,53,0.5)';
           }}>
-            CLICK TO ENTER
+            APPROACH THE MANSION
           </button>
-          <p style={{
-            color: '#9d7cc1',
-            fontSize: '14px',
-            marginTop: '32px',
-            fontFamily: 'monospace',
-            opacity: 0.8
-          }}>Click to enable sound and begin your journey...</p>
         </div>
       </div>
     );
+  }
+
+  if (showPasswordModal && !isAuthenticated) {
+    return <PasswordModal onSuccess={startGame} show={showPasswordModal} />;
   }
 
   if (!hasStarted) {
