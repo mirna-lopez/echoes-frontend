@@ -104,6 +104,31 @@ const GameStateProvider = ({ children }) => {
   }, [isAuthenticated, musicVolume]);
 
   useEffect(() => {
+    const playRoomMusic = async () => {
+      const musicUrl = ROOMS[currentRoom].music;
+      audioRef.current = new Audio(musicUrl);
+      audioRef.current.loop = true;
+      audioRef.current.volume = 0;
+      
+      try {
+        await audioRef.current.play();
+        
+        // Fade in
+        const fadeIn = setInterval(() => {
+          if (audioRef.current && audioRef.current.volume < musicVolume - 0.05) {
+            audioRef.current.volume += 0.05;
+          } else {
+            if (audioRef.current) {
+              audioRef.current.volume = isMusicMuted ? 0 : musicVolume;
+            }
+            clearInterval(fadeIn);
+          }
+        }, 50);
+      } catch (error) {
+        console.log('Error playing room music:', error);
+      }
+    };
+
     if (isAuthenticated && ROOMS[currentRoom]) {
       // Stop welcome music if still playing
       if (welcomeMusicRef.current) {
@@ -114,12 +139,14 @@ const GameStateProvider = ({ children }) => {
       // Fade out current music
       if (audioRef.current) {
         const fadeOut = setInterval(() => {
-          if (audioRef.current.volume > 0.05) {
+          if (audioRef.current && audioRef.current.volume > 0.05) {
             audioRef.current.volume -= 0.05;
           } else {
             clearInterval(fadeOut);
-            audioRef.current.pause();
-            audioRef.current = null;
+            if (audioRef.current) {
+              audioRef.current.pause();
+              audioRef.current = null;
+            }
             playRoomMusic();
           }
         }, 50);
@@ -127,7 +154,7 @@ const GameStateProvider = ({ children }) => {
         playRoomMusic();
       }
     }
-  }, [currentRoom, isAuthenticated]);
+  }, [currentRoom, isAuthenticated, musicVolume, isMusicMuted]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -138,28 +165,7 @@ const GameStateProvider = ({ children }) => {
     }
   }, [isMusicMuted, musicVolume]);
 
-  const playRoomMusic = async () => {
-    const musicUrl = ROOMS[currentRoom].music;
-    audioRef.current = new Audio(musicUrl);
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0;
-    
-    try {
-      await audioRef.current.play();
-      
-      // Fade in
-      const fadeIn = setInterval(() => {
-        if (audioRef.current.volume < musicVolume - 0.05) {
-          audioRef.current.volume += 0.05;
-        } else {
-          audioRef.current.volume = isMusicMuted ? 0 : musicVolume;
-          clearInterval(fadeIn);
-        }
-      }, 50);
-    } catch (error) {
-      console.log('Error playing room music:', error);
-    }
-  };
+
 
   const checkDemoServer = async () => {
     try {
@@ -347,7 +353,7 @@ const App = () => {
 const AppContent = () => {
   const { addMessage, isAuthenticated, demoServerStatus, conversationHistory,
     isLoading, setIsLoading, demoPassword, currentRoom, ROOMS, ghostTrust,
-    adjustTrust, moveToRoom, isMusicMuted, musicVolume, toggleMute, changeVolume } = useGameState();
+    adjustTrust, moveToRoom, isMusicMuted, toggleMute } = useGameState();
   const [hasStarted, setHasStarted] = useState(false);
   const [input, setInput] = useState('');
 
