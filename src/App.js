@@ -69,6 +69,7 @@ const GameStateProvider = ({ children }) => {
   const [demoServerStatus, setDemoServerStatus] = useState({ online: false, checked: false });
   const [isMusicMuted, setIsMusicMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
+  const [musicStarted, setMusicStarted] = useState(false);
 
   const audioRef = useRef(null);
   const welcomeMusicRef = useRef(null);
@@ -79,7 +80,7 @@ const GameStateProvider = ({ children }) => {
 
   useEffect(() => {
     // Initialize welcome music
-    if (!isAuthenticated) {
+    if (!isAuthenticated && musicStarted) {
       welcomeMusicRef.current = new Audio('/music/cryptic-sorrow.mp3');
       welcomeMusicRef.current.loop = true;
       welcomeMusicRef.current.volume = musicVolume;
@@ -88,7 +89,7 @@ const GameStateProvider = ({ children }) => {
         try {
           await welcomeMusicRef.current.play();
         } catch (error) {
-          console.log('Audio autoplay blocked, waiting for user interaction');
+          console.log('Audio autoplay blocked');
         }
       };
       
@@ -101,7 +102,7 @@ const GameStateProvider = ({ children }) => {
         }
       };
     }
-  }, [isAuthenticated, musicVolume]);
+  }, [isAuthenticated, musicVolume, musicStarted]);
 
   useEffect(() => {
     const playRoomMusic = async () => {
@@ -215,20 +216,16 @@ const GameStateProvider = ({ children }) => {
     setGhostTrust(prev => Math.max(0, Math.min(100, prev + amount)));
   };
 
-  const toggleMute = () => {
-    setIsMusicMuted(prev => !prev);
-  };
-
-  const changeVolume = (newVolume) => {
-    setMusicVolume(newVolume);
+  const startMusic = () => {
+    setMusicStarted(true);
   };
 
   return (
     <GameStateContext.Provider value={{
       currentRoom, conversationHistory, ghostTrust, isLoading, demoPassword,
-      isAuthenticated, demoServerStatus, isMusicMuted, musicVolume,
+      isAuthenticated, demoServerStatus, isMusicMuted, musicVolume, musicStarted,
       setIsLoading, addMessage, moveToRoom, adjustTrust, verifyPassword, 
-      toggleMute, changeVolume, ROOMS
+      toggleMute, changeVolume, startMusic, ROOMS
     }}>
       {children}
     </GameStateContext.Provider>
@@ -258,7 +255,7 @@ const TypewriterText = ({ text }) => {
 };
 
 const PasswordModal = ({ onSuccess }) => {
-  const { verifyPassword } = useGameState();
+  const { verifyPassword, startMusic, musicStarted } = useGameState();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -270,6 +267,12 @@ const PasswordModal = ({ onSuccess }) => {
     }
     setIsVerifying(true);
     setError('');
+    
+    // Start music on first interaction
+    if (!musicStarted) {
+      startMusic();
+    }
+    
     const result = await verifyPassword(password.trim());
     if (result.success) {
       onSuccess();
@@ -353,9 +356,15 @@ const App = () => {
 const AppContent = () => {
   const { addMessage, isAuthenticated, demoServerStatus, conversationHistory,
     isLoading, setIsLoading, demoPassword, currentRoom, ROOMS, ghostTrust,
-    adjustTrust, moveToRoom, isMusicMuted, toggleMute } = useGameState();
+    adjustTrust, moveToRoom, isMusicMuted, toggleMute, startMusic, musicStarted } = useGameState();
   const [hasStarted, setHasStarted] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [input, setInput] = useState('');
+
+  const handleInitialClick = () => {
+    startMusic();
+    setShowPasswordModal(true);
+  };
 
   const startGame = () => {
     setHasStarted(true);
