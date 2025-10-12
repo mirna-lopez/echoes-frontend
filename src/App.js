@@ -617,12 +617,16 @@ const AppContent = () => {
           }
           .game-header h1 {
             font-size: 28px !important;
+            padding-right: 0 !important;
           }
           .mute-button {
             padding: 8px 12px !important;
             font-size: 12px !important;
-            top: 16px !important;
-            right: 16px !important;
+            position: relative !important;
+            top: auto !important;
+            right: auto !important;
+            margin-top: 12px !important;
+            justify-content: center !important;
           }
           .room-panel {
             padding: 16px !important;
