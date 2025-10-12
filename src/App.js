@@ -293,31 +293,58 @@ const PasswordModal = ({ onSuccess, show }) => {
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
       background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/OCuqVi0.png)',
       backgroundSize: 'cover', backgroundPosition: 'center',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
+      display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000,
+      overflow: 'auto'
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
-      <div style={{
+      <style>{`
+        @media (max-width: 768px) {
+          .password-container {
+            padding: 32px 24px !important;
+            max-width: 90% !important;
+          }
+          .password-title {
+            font-size: 32px !important;
+          }
+          .password-subtitle {
+            font-size: 11px !important;
+          }
+          .password-description {
+            font-size: 14px !important;
+          }
+          .password-input {
+            padding: 14px !important;
+            font-size: 16px !important;
+          }
+          .password-button {
+            padding: 14px !important;
+            font-size: 16px !important;
+          }
+        }
+      `}</style>
+      <div className="password-container" style={{
         background: 'linear-gradient(135deg, rgba(45,27,61,0.9), rgba(26,11,46,0.9))',
         padding: '48px', borderRadius: '16px', maxWidth: '500px', width: '90%',
         border: '3px solid #ff6b35', textAlign: 'center',
         boxShadow: '0 20px 80px rgba(0,0,0,0.9)', backdropFilter: 'blur(10px)'
       }}>
-        <h2 style={{ 
+        <h2 className="password-title" style={{ 
           color: '#ff6b35', marginTop: 0, fontSize: '48px',
           fontFamily: 'Creepster, cursive',
           textShadow: '0 0 30px rgba(255,107,53,0.8)',
           letterSpacing: '4px', marginBottom: '12px'
         }}>ECHOES OF THE ESTATE</h2>
-        <p style={{ color: '#9d7cc1', fontSize: '13px', fontFamily: 'monospace',
+        <p className="password-subtitle" style={{ color: '#9d7cc1', fontSize: '13px', fontFamily: 'monospace',
           letterSpacing: '2px', marginBottom: '24px', textTransform: 'uppercase'
         }}>The Haunted Mansion Awaits</p>
-        <p style={{ color: '#e0d4f7', marginBottom: '32px', lineHeight: '1.7',
+        <p className="password-description" style={{ color: '#e0d4f7', marginBottom: '32px', lineHeight: '1.7',
           fontFamily: 'Special Elite, cursive', fontSize: '15px'
         }}>Eleanor's melancholic presence lingers in every shadow. Enter the password to unlock the mysteries.</p>
         <input type="password" value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
           placeholder="Enter password..." disabled={isVerifying}
+          className="password-input"
           style={{
             width: '100%', padding: '18px',
             background: 'linear-gradient(135deg, rgba(13,2,33,0.9), rgba(26,11,46,0.9))',
@@ -334,6 +361,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           }}>{error}</div>
         )}
         <button onClick={handleSubmit} disabled={isVerifying}
+          className="password-button"
           style={{
             width: '100%', padding: '18px',
             background: isVerifying ? 'linear-gradient(135deg, #555, #333)' : 'linear-gradient(135deg, #ff6b35, #ff8c61)',
@@ -427,7 +455,30 @@ const AppContent = () => {
         cursor: 'pointer'
       }}>
         <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
-        <div style={{
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+          }
+          @media (max-width: 768px) {
+            .initial-container {
+              padding: 40px 30px !important;
+            }
+            .initial-title {
+              font-size: 42px !important;
+              margin-bottom: 16px !important;
+            }
+            .initial-subtitle {
+              font-size: 18px !important;
+              margin-bottom: 32px !important;
+            }
+            .initial-button {
+              padding: 20px 48px !important;
+              font-size: 20px !important;
+            }
+          }
+        `}</style>
+        <div className="initial-container" style={{
           textAlign: 'center',
           background: 'linear-gradient(135deg, rgba(45,27,61,0.85), rgba(26,11,46,0.85))',
           padding: '80px 60px',
@@ -437,13 +488,7 @@ const AppContent = () => {
           backdropFilter: 'blur(10px)',
           animation: 'pulse 2s ease-in-out infinite'
         }}>
-          <style>{`
-            @keyframes pulse {
-              0%, 100% { transform: scale(1); }
-              50% { transform: scale(1.02); }
-            }
-          `}</style>
-          <h1 style={{
+          <h1 className="initial-title" style={{
             color: '#ff6b35',
             fontSize: '72px',
             marginBottom: '24px',
@@ -452,14 +497,14 @@ const AppContent = () => {
             letterSpacing: '4px',
             marginTop: 0
           }}>ECHOES OF THE ESTATE</h1>
-          <p style={{
+          <p className="initial-subtitle" style={{
             color: '#ffd700',
             fontSize: '24px',
             fontFamily: 'Creepster, cursive',
             letterSpacing: '2px',
             marginBottom: '48px'
           }}>Eleanor's Mansion Awaits...</p>
-          <button onClick={handleInitialClick} style={{
+          <button onClick={handleInitialClick} className="initial-button" style={{
             padding: '28px 72px',
             background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
             color: '#fff',
@@ -561,8 +606,63 @@ const AppContent = () => {
       padding: '20px', fontFamily: 'Special Elite, cursive'
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
-      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-        <header style={{
+      <style>{`
+        @media (max-width: 768px) {
+          .game-container {
+            padding: 10px !important;
+          }
+          .game-header {
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+          }
+          .game-header h1 {
+            font-size: 28px !important;
+          }
+          .mute-button {
+            padding: 8px 12px !important;
+            font-size: 12px !important;
+            top: 16px !important;
+            right: 16px !important;
+          }
+          .room-panel {
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+          }
+          .room-panel h2 {
+            font-size: 20px !important;
+          }
+          .room-panel p {
+            font-size: 14px !important;
+          }
+          .room-button {
+            padding: 10px 16px !important;
+            font-size: 12px !important;
+          }
+          .trust-panel {
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+          }
+          .chat-box {
+            height: 300px !important;
+            padding: 16px !important;
+            margin-bottom: 16px !important;
+          }
+          .chat-message {
+            padding: 12px !important;
+            margin-bottom: 12px !important;
+          }
+          .input-container input {
+            padding: 12px !important;
+            font-size: 14px !important;
+          }
+          .send-button {
+            padding: 12px 20px !important;
+            font-size: 14px !important;
+          }
+        }
+      `}</style>
+      <div className="game-container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <header className="game-header" style={{
           textAlign: 'center', marginBottom: '32px', padding: '24px',
           background: 'linear-gradient(135deg, rgba(45,27,61,0.95), rgba(26,11,46,0.95))',
           borderRadius: '12px', border: '2px solid #ff6b35',
@@ -573,7 +673,7 @@ const AppContent = () => {
             fontFamily: 'Creepster, cursive', letterSpacing: '3px'
           }}>ECHOES OF THE ESTATE</h1>
           
-          <div style={{
+          <div className="mute-button" style={{
             position: 'absolute', top: '24px', right: '24px',
             display: 'flex', gap: '12px', alignItems: 'center'
           }}>
@@ -589,7 +689,7 @@ const AppContent = () => {
           </div>
         </header>
 
-        <div style={{
+        <div className="room-panel" style={{
           padding: '24px', 
           background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(45,27,61,0.95))',
           borderRadius: '12px', marginBottom: '24px', border: '2px solid #ff6b35',
@@ -603,7 +703,7 @@ const AppContent = () => {
             <p style={{ color: '#9d7cc1', fontSize: '14px' }}>Available paths:</p>
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               {ROOMS[currentRoom].connections.map(roomId => (
-                <button key={roomId} onClick={() => moveToRoom(roomId)} style={{
+                <button key={roomId} onClick={() => moveToRoom(roomId)} className="room-button" style={{
                   padding: '12px 20px', 
                   background: 'linear-gradient(135deg, rgba(45,27,61,0.9), rgba(26,11,46,0.9))',
                   color: '#ff6b35', border: '2px solid #ff6b35', borderRadius: '8px',
@@ -614,7 +714,7 @@ const AppContent = () => {
           </div>
         </div>
 
-        <div style={{
+        <div className="trust-panel" style={{
           padding: '20px', 
           background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(45,27,61,0.95))',
           borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b',
@@ -634,7 +734,7 @@ const AppContent = () => {
           </div>
         </div>
 
-        <div style={{
+        <div className="chat-box" style={{
           height: '350px', overflowY: 'auto', padding: '20px',
           background: 'linear-gradient(180deg, rgba(13,2,33,0.95), rgba(26,11,46,0.95))',
           borderRadius: '12px', marginBottom: '24px', border: '2px solid #8b008b',
@@ -646,7 +746,7 @@ const AppContent = () => {
             fontSize: '13px', color: '#ffd700', textAlign: 'center'
           }}>AI Powered by Claude | Music by Kevin MacLeod</div>
           {conversationHistory.map((msg, idx) => (
-            <div key={idx} style={{
+            <div key={idx} className="chat-message" style={{
               marginBottom: '16px', padding: '14px',
               background: msg.role === 'user' ? 'rgba(45,27,61,0.8)' : msg.role === 'assistant' ? 'rgba(26,11,46,0.8)' : 'rgba(139,0,139,0.6)',
               borderRadius: '10px',
@@ -664,7 +764,7 @@ const AppContent = () => {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div className="input-container" style={{ display: 'flex', gap: '12px' }}>
           <input type="text" value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
@@ -676,7 +776,7 @@ const AppContent = () => {
               color: '#e0d4f7', fontSize: '15px',
               backdropFilter: 'blur(10px)'
             }} />
-          <button onClick={sendMessage} disabled={isLoading} style={{
+          <button onClick={sendMessage} disabled={isLoading} className="send-button" style={{
             padding: '16px 32px',
             background: isLoading ? '#555' : 'linear-gradient(135deg, #ff6b35, #ff8c61)',
             color: '#fff', border: 'none', borderRadius: '10px',
