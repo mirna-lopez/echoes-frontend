@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const GameStateContext = createContext();
 
@@ -15,37 +15,43 @@ const ROOMS = {
     id: 'entrance',
     name: 'Grand Entrance Hall',
     description: 'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
-    connections: ['library', 'dining', 'garden']
+    connections: ['library', 'dining', 'garden'],
+    music: '/music/thunder-dreams.mp3'
   },
   library: {
     id: 'library',
     name: 'Forbidden Library',
     description: 'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
-    connections: ['entrance', 'study']
+    connections: ['entrance', 'study'],
+    music: '/music/the-chamber.mp3'
   },
   dining: {
     id: 'dining',
     name: 'Cursed Dining Room',
     description: 'A long table set for twelve ghostly guests. Cobwebs drape the corners like funeral shrouds.',
-    connections: ['entrance', 'kitchen']
+    connections: ['entrance', 'kitchen'],
+    music: '/music/ghostpocalypse.mp3'
   },
   garden: {
     id: 'garden',
     name: 'Dead Garden',
     description: 'Withered roses choke the overgrown paths. The moon casts twisted shadows through gnarled trees.',
-    connections: ['entrance']
+    connections: ['entrance'],
+    music: '/music/dreamy-flashback.mp3'
   },
   study: {
     id: 'study',
     name: 'Eleanor\'s Study',
     description: 'Personal journals lie scattered. A portrait watches with eyes that seem to follow you.',
-    connections: ['library']
+    connections: ['library'],
+    music: '/music/atlantean-twilight.mp3'
   },
   kitchen: {
     id: 'kitchen',
     name: 'Abandoned Kitchen',
     description: 'Rusted pots hang above a cold stove. Something dark stains the floor near the pantry.',
-    connections: ['dining']
+    connections: ['dining'],
+    music: '/music/decay.mp3'
   }
 };
 
@@ -61,10 +67,99 @@ const GameStateProvider = ({ children }) => {
   const [demoPassword, setDemoPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [demoServerStatus, setDemoServerStatus] = useState({ online: false, checked: false });
+  const [isMusicMuted, setIsMusicMuted] = useState(false);
+  const [musicVolume, setMusicVolume] = useState(0.3);
+
+  const audioRef = useRef(null);
+  const welcomeMusicRef = useRef(null);
 
   useEffect(() => {
     checkDemoServer();
   }, []);
+
+  useEffect(() => {
+    // Initialize welcome music
+    if (!isAuthenticated) {
+      welcomeMusicRef.current = new Audio('/music/cryptic-sorrow.mp3');
+      welcomeMusicRef.current.loop = true;
+      welcomeMusicRef.current.volume = musicVolume;
+      
+      const playWelcomeMusic = async () => {
+        try {
+          await welcomeMusicRef.current.play();
+        } catch (error) {
+          console.log('Audio autoplay blocked, waiting for user interaction');
+        }
+      };
+      
+      playWelcomeMusic();
+
+      return () => {
+        if (welcomeMusicRef.current) {
+          welcomeMusicRef.current.pause();
+          welcomeMusicRef.current = null;
+        }
+      };
+    }
+  }, [isAuthenticated, musicVolume]);
+
+  useEffect(() => {
+    if (isAuthenticated && ROOMS[currentRoom]) {
+      // Stop welcome music if still playing
+      if (welcomeMusicRef.current) {
+        welcomeMusicRef.current.pause();
+        welcomeMusicRef.current = null;
+      }
+
+      // Fade out current music
+      if (audioRef.current) {
+        const fadeOut = setInterval(() => {
+          if (audioRef.current.volume > 0.05) {
+            audioRef.current.volume -= 0.05;
+          } else {
+            clearInterval(fadeOut);
+            audioRef.current.pause();
+            audioRef.current = null;
+            playRoomMusic();
+          }
+        }, 50);
+      } else {
+        playRoomMusic();
+      }
+    }
+  }, [currentRoom, isAuthenticated]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMusicMuted ? 0 : musicVolume;
+    }
+    if (welcomeMusicRef.current) {
+      welcomeMusicRef.current.volume = isMusicMuted ? 0 : musicVolume;
+    }
+  }, [isMusicMuted, musicVolume]);
+
+  const playRoomMusic = async () => {
+    const musicUrl = ROOMS[currentRoom].music;
+    audioRef.current = new Audio(musicUrl);
+    audioRef.current.loop = true;
+    audioRef.current.volume = 0;
+    
+    try {
+      await audioRef.current.play();
+      
+      // Fade in
+      const fadeIn = setInterval(() => {
+        if (audioRef.current.volume < musicVolume - 0.05) {
+          audioRef.current.volume += 0.05;
+        } else {
+          audioRef.current.volume = isMusicMuted ? 0 : musicVolume;
+          clearInterval(fadeIn);
+        }
+      }, 50);
+    } catch (error) {
+      console.log('Error playing room music:', error);
+    }
+  };
 
   const checkDemoServer = async () => {
     try {
@@ -114,11 +209,20 @@ const GameStateProvider = ({ children }) => {
     setGhostTrust(prev => Math.max(0, Math.min(100, prev + amount)));
   };
 
+  const toggleMute = () => {
+    setIsMusicMuted(prev => !prev);
+  };
+
+  const changeVolume = (newVolume) => {
+    setMusicVolume(newVolume);
+  };
+
   return (
     <GameStateContext.Provider value={{
       currentRoom, conversationHistory, ghostTrust, isLoading, demoPassword,
-      isAuthenticated, demoServerStatus, setIsLoading, addMessage, moveToRoom,
-      adjustTrust, verifyPassword, ROOMS
+      isAuthenticated, demoServerStatus, isMusicMuted, musicVolume,
+      setIsLoading, addMessage, moveToRoom, adjustTrust, verifyPassword, 
+      toggleMute, changeVolume, ROOMS
     }}>
       {children}
     </GameStateContext.Provider>
@@ -243,7 +347,7 @@ const App = () => {
 const AppContent = () => {
   const { addMessage, isAuthenticated, demoServerStatus, conversationHistory,
     isLoading, setIsLoading, demoPassword, currentRoom, ROOMS, ghostTrust,
-    adjustTrust, moveToRoom } = useGameState();
+    adjustTrust, moveToRoom, isMusicMuted, musicVolume, toggleMute, changeVolume } = useGameState();
   const [hasStarted, setHasStarted] = useState(false);
   const [input, setInput] = useState('');
 
@@ -363,12 +467,27 @@ const AppContent = () => {
           textAlign: 'center', marginBottom: '32px', padding: '24px',
           background: 'linear-gradient(135deg, rgba(45,27,61,0.95), rgba(26,11,46,0.95))',
           borderRadius: '12px', border: '2px solid #ff6b35',
-          backdropFilter: 'blur(10px)'
+          backdropFilter: 'blur(10px)', position: 'relative'
         }}>
           <h1 style={{
             color: '#ff6b35', fontSize: '48px', margin: 0,
             fontFamily: 'Creepster, cursive', letterSpacing: '3px'
           }}>ECHOES OF THE ESTATE</h1>
+          
+          <div style={{
+            position: 'absolute', top: '24px', right: '24px',
+            display: 'flex', gap: '12px', alignItems: 'center'
+          }}>
+            <button onClick={toggleMute} style={{
+              padding: '12px 20px',
+              background: 'linear-gradient(135deg, rgba(139,0,139,0.8), rgba(75,0,130,0.8))',
+              color: '#ffd700', border: '2px solid #8b008b',
+              borderRadius: '8px', cursor: 'pointer',
+              fontSize: '14px', fontWeight: 'bold'
+            }}>
+              {isMusicMuted ? '🔇 UNMUTE' : '🔊 MUTE'}
+            </button>
+          </div>
         </header>
 
         <div style={{
@@ -426,7 +545,7 @@ const AppContent = () => {
             background: 'rgba(139,0,139,0.3)', border: '1px solid #ff6b35',
             borderRadius: '8px', padding: '12px', marginBottom: '20px',
             fontSize: '13px', color: '#ffd700', textAlign: 'center'
-          }}>AI Powered by Claude</div>
+          }}>AI Powered by Claude | Music by Kevin MacLeod</div>
           {conversationHistory.map((msg, idx) => (
             <div key={idx} style={{
               marginBottom: '16px', padding: '14px',
