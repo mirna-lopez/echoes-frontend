@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
 const GameStateContext = createContext();
@@ -220,6 +221,14 @@ const GameStateProvider = ({ children }) => {
     setMusicStarted(true);
   };
 
+  const toggleMute = () => {
+    setIsMusicMuted(prev => !prev);
+  };
+
+  const changeVolume = (newVolume) => {
+    setMusicVolume(newVolume);
+  };
+
   return (
     <GameStateContext.Provider value={{
       currentRoom, conversationHistory, ghostTrust, isLoading, demoPassword,
@@ -254,8 +263,8 @@ const TypewriterText = ({ text }) => {
   return <span>{displayedText}</span>;
 };
 
-const PasswordModal = ({ onSuccess }) => {
-  const { verifyPassword, startMusic, musicStarted } = useGameState();
+const PasswordModal = ({ onSuccess, show }) => {
+  const { verifyPassword } = useGameState();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -268,11 +277,6 @@ const PasswordModal = ({ onSuccess }) => {
     setIsVerifying(true);
     setError('');
     
-    // Start music on first interaction
-    if (!musicStarted) {
-      startMusic();
-    }
-    
     const result = await verifyPassword(password.trim());
     if (result.success) {
       onSuccess();
@@ -282,6 +286,8 @@ const PasswordModal = ({ onSuccess }) => {
     }
     setIsVerifying(false);
   };
+
+  if (!show) return null;
 
   return (
     <div style={{
@@ -406,7 +412,91 @@ const AppContent = () => {
     }
   };
 
-  if (!isAuthenticated) return <PasswordModal onSuccess={startGame} />;
+  if (!isAuthenticated) return <PasswordModal onSuccess={startGame} show={showPasswordModal} />;
+
+  if (!showPasswordModal && !isAuthenticated) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/OCuqVi0.png)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        padding: '20px',
+        fontFamily: 'Special Elite, cursive',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer'
+      }}>
+        <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
+        <div style={{
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, rgba(45,27,61,0.85), rgba(26,11,46,0.85))',
+          padding: '80px 60px',
+          borderRadius: '16px',
+          border: '3px solid #ff6b35',
+          boxShadow: '0 20px 80px rgba(0,0,0,0.9)',
+          backdropFilter: 'blur(10px)',
+          animation: 'pulse 2s ease-in-out infinite'
+        }}>
+          <style>{`
+            @keyframes pulse {
+              0%, 100% { transform: scale(1); }
+              50% { transform: scale(1.02); }
+            }
+          `}</style>
+          <h1 style={{
+            color: '#ff6b35',
+            fontSize: '72px',
+            marginBottom: '24px',
+            textShadow: '0 0 40px rgba(255,107,53,1)',
+            fontFamily: 'Creepster, cursive',
+            letterSpacing: '4px',
+            marginTop: 0
+          }}>ECHOES OF THE ESTATE</h1>
+          <p style={{
+            color: '#ffd700',
+            fontSize: '24px',
+            fontFamily: 'Creepster, cursive',
+            letterSpacing: '2px',
+            marginBottom: '48px'
+          }}>A Haunted Tale Awaits</p>
+          <button onClick={handleInitialClick} style={{
+            padding: '28px 72px',
+            background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
+            color: '#fff',
+            border: '3px solid #ffd700',
+            borderRadius: '12px',
+            fontSize: '28px',
+            fontWeight: 'bold',
+            fontFamily: 'Creepster, cursive',
+            cursor: 'pointer',
+            letterSpacing: '3px',
+            boxShadow: '0 10px 30px rgba(255,107,53,0.5)',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = 'scale(1.05)';
+            e.target.style.boxShadow = '0 15px 40px rgba(255,107,53,0.7)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = 'scale(1)';
+            e.target.style.boxShadow = '0 10px 30px rgba(255,107,53,0.5)';
+          }}>
+            CLICK TO ENTER
+          </button>
+          <p style={{
+            color: '#9d7cc1',
+            fontSize: '14px',
+            marginTop: '32px',
+            fontFamily: 'monospace',
+            opacity: 0.8
+          }}>Click to enable sound and begin your journey...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!hasStarted) {
     return (
