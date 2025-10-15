@@ -16,42 +16,48 @@ const ROOMS = {
     name: 'Grand Entrance Hall',
     description: 'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
     connections: ['library', 'dining', 'garden'],
-    music: '/music/thunder-dreams.mp3'
+    music: '/music/thunder-dreams.mp3',
+    background: 'https://i.imgur.com/U0t9EZn.png'
   },
   library: {
     id: 'library',
     name: 'Forbidden Library',
     description: 'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
     connections: ['entrance', 'study'],
-    music: '/music/the-chamber.mp3'
+    music: '/music/the-chamber.mp3',
+    background: 'https://i.imgur.com/JWWK66y.png'
   },
   dining: {
     id: 'dining',
     name: 'Cursed Dining Room',
     description: 'A long table set for twelve ghostly guests. Cobwebs drape the corners like funeral shrouds.',
     connections: ['entrance', 'kitchen'],
-    music: '/music/ghostpocalypse.mp3'
+    music: '/music/ghostpocalypse.mp3',
+    background: 'https://i.imgur.com/HcVTV7i.png'
   },
   garden: {
     id: 'garden',
     name: 'Dead Garden',
     description: 'Withered roses choke the overgrown paths. The moon casts twisted shadows through gnarled trees.',
     connections: ['entrance'],
-    music: '/music/dreamy-flashback.mp3'
+    music: '/music/dreamy-flashback.mp3',
+    background: 'https://i.imgur.com/R77iGFG.png'
   },
   study: {
     id: 'study',
     name: 'Eleanor\'s Study',
     description: 'Personal journals lie scattered. A portrait watches with eyes that seem to follow you.',
     connections: ['library'],
-    music: '/music/atlantean-twilight.mp3'
+    music: '/music/atlantean-twilight.mp3',
+    background: 'https://i.imgur.com/ljUWOqY.png'
   },
   kitchen: {
     id: 'kitchen',
     name: 'Abandoned Kitchen',
     description: 'Rusted pots hang above a cold stove. Something dark stains the floor near the pantry.',
     connections: ['dining'],
-    music: '/music/decay.mp3'
+    music: '/music/decay.mp3',
+    background: 'https://i.imgur.com/ow5F0My.png'
   }
 };
 
