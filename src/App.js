@@ -399,13 +399,13 @@ const AppContent = () => {
   const [hasStarted, setHasStarted] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [input, setInput] = useState('');
-  const [backgroundImage, setBackgroundImage] = useState('');
+  const [backgroundImage, setBackgroundImage] = useState(ROOMS.entrance.background);
 
   useEffect(() => {
     if (isAuthenticated && ROOMS[currentRoom]) {
       setBackgroundImage(ROOMS[currentRoom].background);
     }
-  }, [currentRoom, isAuthenticated]);
+  }, [currentRoom, isAuthenticated, ROOMS]);
 
   const handleInitialClick = () => {
     startMusic();
