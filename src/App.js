@@ -399,6 +399,13 @@ const AppContent = () => {
   const [hasStarted, setHasStarted] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [input, setInput] = useState('');
+  const [backgroundImage, setBackgroundImage] = useState('');
+
+  useEffect(() => {
+    if (isAuthenticated && ROOMS[currentRoom]) {
+      setBackgroundImage(ROOMS[currentRoom].background);
+    }
+  }, [currentRoom, isAuthenticated]);
 
   const handleInitialClick = () => {
     startMusic();
@@ -407,6 +414,7 @@ const AppContent = () => {
 
   const startGame = () => {
     setHasStarted(true);
+    setBackgroundImage(ROOMS[currentRoom].background);
     addMessage('system', 'Welcome to Echoes of the Estate. You sense a presence...');
   };
 
