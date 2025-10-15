@@ -613,11 +613,13 @@ const AppContent = () => {
   return (
     <div style={{
       minHeight: '100vh', 
-      background: 'linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url(https://i.imgur.com/U0t9EZn.png)',
+      background: `linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url('${backgroundImage}')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed',
-      padding: '20px', fontFamily: 'Special Elite, cursive'
+      padding: '20px', 
+      fontFamily: 'Special Elite, cursive',
+      transition: 'background-image 0.5s ease-in-out'
     }}>
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
       <style>{`
