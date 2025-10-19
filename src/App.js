@@ -17,7 +17,8 @@ const ROOMS = {
     description: 'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
     connections: ['library', 'dining', 'garden'],
     music: '/music/thunder-dreams.mp3',
-    background: 'https://i.imgur.com/U0t9EZn.png'
+    background: 'https://i.imgur.com/U0t9EZn.png',
+    cardImage: 'https://i.imgur.com/U0t9EZn.png'
   },
   library: {
     id: 'library',
@@ -25,7 +26,8 @@ const ROOMS = {
     description: 'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
     connections: ['entrance', 'study'],
     music: '/music/the-chamber.mp3',
-    background: 'https://i.imgur.com/JWWK66y.png'
+    background: 'https://i.imgur.com/JWWK66y.png',
+    cardImage: 'https://i.imgur.com/gtYhFrc.png'
   },
   dining: {
     id: 'dining',
@@ -33,7 +35,8 @@ const ROOMS = {
     description: 'A long table set for twelve ghostly guests. Cobwebs drape the corners like funeral shrouds.',
     connections: ['entrance', 'kitchen'],
     music: '/music/ghostpocalypse.mp3',
-    background: 'https://i.imgur.com/HcVTV7i.png'
+    background: 'https://i.imgur.com/HcVTV7i.png',
+    cardImage: 'https://i.imgur.com/zVIMjaK.png'
   },
   garden: {
     id: 'garden',
@@ -41,15 +44,17 @@ const ROOMS = {
     description: 'Withered roses choke the overgrown paths. The moon casts twisted shadows through gnarled trees.',
     connections: ['entrance'],
     music: '/music/dreamy-flashback.mp3',
-    background: 'https://i.imgur.com/R77iGFG.png'
+    background: 'https://i.imgur.com/R77iGFG.png',
+    cardImage: 'https://i.imgur.com/R77iGFG.png'
   },
   study: {
     id: 'study',
     name: 'Eleanor\'s Study',
-    description: 'Personal journals lie scattered. A portrait watches with eyes that seem to follow you.',
+    description: 'Personal journals lie scattered across an aged desk. Ink-stained letters reveal fragments of a melancholic past.',
     connections: ['library'],
     music: '/music/atlantean-twilight.mp3',
-    background: 'https://i.imgur.com/ljUWOqY.png'
+    background: 'https://i.imgur.com/ljUWOqY.png',
+    cardImage: 'https://i.imgur.com/837mjXI.png'
   },
   kitchen: {
     id: 'kitchen',
@@ -57,12 +62,13 @@ const ROOMS = {
     description: 'Rusted pots hang above a cold stove. Something dark stains the floor near the pantry.',
     connections: ['dining'],
     music: '/music/decay.mp3',
-    background: 'https://i.imgur.com/ow5F0My.png'
+    background: 'https://i.imgur.com/ow5F0My.png',
+    cardImage: 'https://i.imgur.com/QnLAcWw.png'
   }
 };
 
 const API_CONFIG = {
-  DEMO_SERVER: 'https://echoes-estate-backend.onrender.com'
+  DEMO_SERVER: 'http://localhost:3001'
 };
 
 const GameStateProvider = ({ children }) => {
@@ -222,6 +228,59 @@ const GameStateProvider = ({ children }) => {
     setGhostTrust(prev => Math.max(0, Math.min(100, prev + amount)));
   };
 
+  const saveGameToLocalStorage = () => {
+    const gameState = {
+      currentRoom,
+      conversationHistory,
+      ghostTrust,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem('echoesEstateProgress', JSON.stringify(gameState));
+  };
+
+  const loadGameFromLocalStorage = () => {
+    const saved = localStorage.getItem('echoesEstateProgress');
+    if (saved) {
+      const gameState = JSON.parse(saved);
+      setCurrentRoom(gameState.currentRoom);
+      setConversationHistory(gameState.conversationHistory || []);
+      setGhostTrust(gameState.ghostTrust || 0);
+      return true;
+    }
+    return false;
+  };
+
+  const generateSaveCode = () => {
+    const gameState = {
+      currentRoom,
+      conversationHistory: conversationHistory.slice(-20), // Last 20 messages only
+      ghostTrust,
+      timestamp: new Date().toISOString()
+    };
+    const encoded = btoa(JSON.stringify(gameState));
+    return encoded;
+  };
+
+  const loadGameFromCode = (code) => {
+    try {
+      const decoded = atob(code);
+      const gameState = JSON.parse(decoded);
+      setCurrentRoom(gameState.currentRoom);
+      setConversationHistory(gameState.conversationHistory || []);
+      setGhostTrust(gameState.ghostTrust || 0);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: 'Invalid save code' };
+    }
+  };
+
+  const clearSavedGame = () => {
+    localStorage.removeItem('echoesEstateProgress');
+    setCurrentRoom('entrance');
+    setConversationHistory([]);
+    setGhostTrust(0);
+  };
+
   const startMusic = () => {
     setMusicStarted(true);
   };
@@ -239,7 +298,8 @@ const GameStateProvider = ({ children }) => {
       currentRoom, conversationHistory, ghostTrust, isLoading, demoPassword,
       isAuthenticated, demoServerStatus, isMusicMuted, musicVolume, musicStarted,
       setIsLoading, addMessage, moveToRoom, adjustTrust, verifyPassword, 
-      toggleMute, changeVolume, startMusic, ROOMS
+      toggleMute, changeVolume, startMusic, saveGameToLocalStorage, 
+      loadGameFromLocalStorage, generateSaveCode, loadGameFromCode, clearSavedGame, ROOMS
     }}>
       {children}
     </GameStateContext.Provider>
@@ -395,11 +455,17 @@ const App = () => {
 const AppContent = () => {
   const { addMessage, isAuthenticated, demoServerStatus, conversationHistory,
     isLoading, setIsLoading, demoPassword, currentRoom, ROOMS, ghostTrust,
-    adjustTrust, moveToRoom, isMusicMuted, toggleMute, startMusic } = useGameState();
+    adjustTrust, moveToRoom, isMusicMuted, toggleMute, startMusic,
+    saveGameToLocalStorage, loadGameFromLocalStorage, generateSaveCode, 
+    loadGameFromCode, clearSavedGame } = useGameState();
   const [hasStarted, setHasStarted] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [input, setInput] = useState('');
   const [backgroundImage, setBackgroundImage] = useState(ROOMS.entrance.background);
+  const [showSaveMenu, setShowSaveMenu] = useState(false);
+  const [saveCode, setSaveCode] = useState('');
+  const [loadCodeInput, setLoadCodeInput] = useState('');
+  const [saveMessage, setSaveMessage] = useState('');
 
   useEffect(() => {
     if (isAuthenticated && ROOMS[currentRoom]) {
@@ -407,15 +473,59 @@ const AppContent = () => {
     }
   }, [currentRoom, isAuthenticated, ROOMS]);
 
+  // Auto-save progress every time game state changes
+  useEffect(() => {
+    if (hasStarted && isAuthenticated) {
+      saveGameToLocalStorage();
+    }
+  }, [currentRoom, ghostTrust, conversationHistory, hasStarted, isAuthenticated, saveGameToLocalStorage]);
+
   const handleInitialClick = () => {
     startMusic();
     setShowPasswordModal(true);
   };
 
   const startGame = () => {
+    // Check for saved progress
+    const hasSaved = loadGameFromLocalStorage();
+    if (hasSaved) {
+      addMessage('system', 'Previous progress restored. Welcome back to Echoes of the Estate...');
+    } else {
+      addMessage('system', 'Welcome to Echoes of the Estate. You sense a presence...');
+    }
     setHasStarted(true);
     setBackgroundImage(ROOMS[currentRoom].background);
-    addMessage('system', 'Welcome to Echoes of the Estate. You sense a presence...');
+  };
+
+  const handleGenerateSaveCode = () => {
+    const code = generateSaveCode();
+    setSaveCode(code);
+    setSaveMessage('Save code generated! Copy it to use on any device.');
+  };
+
+  const handleLoadFromCode = () => {
+    if (!loadCodeInput.trim()) {
+      setSaveMessage('Please enter a save code');
+      return;
+    }
+    const result = loadGameFromCode(loadCodeInput);
+    if (result.success) {
+      setSaveMessage('Progress loaded successfully!');
+      setShowSaveMenu(false);
+      setLoadCodeInput('');
+      setBackgroundImage(ROOMS[currentRoom].background);
+    } else {
+      setSaveMessage('Invalid save code. Please try again.');
+    }
+  };
+
+  const handleNewGame = () => {
+    if (window.confirm('Start a new game? This will clear your current progress.')) {
+      clearSavedGame();
+      setSaveMessage('Progress cleared. Starting fresh!');
+      setShowSaveMenu(false);
+      addMessage('system', 'Welcome to Echoes of the Estate. You sense a presence...');
+    }
   };
 
   const sendMessage = async () => {
@@ -624,38 +734,69 @@ const AppContent = () => {
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
       <style>{`
         @media (max-width: 768px) {
+          body {
+            overflow-x: hidden !important;
+          }
           .game-container {
             padding: 10px !important;
+            max-width: 100% !important;
           }
           .game-header {
-            padding: 16px !important;
+            padding: 16px 12px !important;
             margin-bottom: 16px !important;
           }
           .game-header h1 {
-            font-size: 28px !important;
+            font-size: 24px !important;
             padding-right: 0 !important;
+            margin-bottom: 12px !important;
           }
           .mute-button {
-            padding: 8px 12px !important;
-            font-size: 12px !important;
             position: relative !important;
             top: auto !important;
             right: auto !important;
             margin-top: 12px !important;
             justify-content: center !important;
+            flex-direction: column !important;
+            width: 100% !important;
+          }
+          .mute-button button {
+            padding: 10px 16px !important;
+            font-size: 13px !important;
+            width: 100% !important;
+          }
+          .save-menu-panel {
+            padding: 16px !important;
+          }
+          .save-menu-panel h3 {
+            font-size: 20px !important;
+          }
+          .save-menu-panel p {
+            font-size: 13px !important;
+          }
+          .save-menu-panel button {
+            width: 100% !important;
+            font-size: 13px !important;
+          }
+          .save-menu-panel input {
+            font-size: 13px !important;
           }
           .room-panel {
             padding: 16px !important;
             margin-bottom: 16px !important;
           }
           .room-panel h2 {
-            font-size: 20px !important;
+            font-size: 18px !important;
+          }
+          .room-panel-image {
+            height: 250px !important;
+            background-size: contain !important;
+            background-color: rgba(13,2,33,0.8) !important;
           }
           .room-panel p {
-            font-size: 14px !important;
+            font-size: 13px !important;
           }
           .room-button {
-            padding: 10px 16px !important;
+            padding: 10px 14px !important;
             font-size: 12px !important;
           }
           .trust-panel {
@@ -663,21 +804,28 @@ const AppContent = () => {
             margin-bottom: 16px !important;
           }
           .chat-box {
-            height: 300px !important;
-            padding: 16px !important;
+            height: 250px !important;
+            padding: 12px !important;
             margin-bottom: 16px !important;
           }
           .chat-message {
-            padding: 12px !important;
+            padding: 10px !important;
             margin-bottom: 12px !important;
+            font-size: 13px !important;
+          }
+          .input-container {
+            flex-direction: column !important;
+            gap: 8px !important;
           }
           .input-container input {
-            padding: 12px !important;
+            padding: 14px !important;
             font-size: 14px !important;
+            width: 100% !important;
           }
           .send-button {
-            padding: 12px 20px !important;
+            padding: 14px !important;
             font-size: 14px !important;
+            width: 100% !important;
           }
         }
       `}</style>
@@ -697,6 +845,15 @@ const AppContent = () => {
             position: 'absolute', top: '24px', right: '24px',
             display: 'flex', gap: '12px', alignItems: 'center'
           }}>
+            <button onClick={() => setShowSaveMenu(!showSaveMenu)} style={{
+              padding: '12px 20px',
+              background: 'linear-gradient(135deg, rgba(139,0,139,0.8), rgba(75,0,130,0.8))',
+              color: '#ffd700', border: '2px solid #8b008b',
+              borderRadius: '8px', cursor: 'pointer',
+              fontSize: '14px', fontWeight: 'bold'
+            }}>
+              💾 SAVE
+            </button>
             <button onClick={toggleMute} style={{
               padding: '12px 20px',
               background: 'linear-gradient(135deg, rgba(139,0,139,0.8), rgba(75,0,130,0.8))',
@@ -709,6 +866,123 @@ const AppContent = () => {
           </div>
         </header>
 
+        {showSaveMenu && (
+          <div className="save-menu-panel" style={{
+            padding: '24px',
+            background: 'linear-gradient(135deg, rgba(45,27,61,0.95), rgba(26,11,46,0.95))',
+            borderRadius: '12px',
+            marginBottom: '24px',
+            border: '2px solid #ffd700',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <h3 style={{ color: '#ffd700', marginTop: 0, fontFamily: 'Creepster, cursive' }}>
+              💾 Save & Load Progress
+            </h3>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <p style={{ color: '#e0d4f7', fontSize: '14px', marginBottom: '12px' }}>
+                ✅ Auto-saved to this browser (happens automatically)
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,215,0,0.3)' }}>
+              <p style={{ color: '#e0d4f7', fontSize: '14px', marginBottom: '12px' }}>
+                📋 Generate a save code to continue on any device:
+              </p>
+              <button onClick={handleGenerateSaveCode} style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
+                color: '#fff', border: 'none', borderRadius: '8px',
+                cursor: 'pointer', fontSize: '14px', fontWeight: 'bold',
+                marginBottom: '12px'
+              }}>
+                Generate Save Code
+              </button>
+              {saveCode && (
+                <div style={{
+                  padding: '12px',
+                  background: 'rgba(255,215,0,0.1)',
+                  border: '1px solid #ffd700',
+                  borderRadius: '8px',
+                  marginTop: '12px'
+                }}>
+                  <p style={{ color: '#e0d4f7', fontSize: '12px', marginBottom: '8px', wordBreak: 'break-all' }}>
+                    {saveCode}
+                  </p>
+                  <button onClick={() => {
+                    navigator.clipboard.writeText(saveCode);
+                    setSaveMessage('Code copied to clipboard!');
+                  }} style={{
+                    padding: '8px 16px',
+                    background: 'linear-gradient(135deg, #8b008b, #9d7cc1)',
+                    color: '#fff', border: 'none', borderRadius: '6px',
+                    cursor: 'pointer', fontSize: '12px'
+                  }}>
+                    📋 Copy Code
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginBottom: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,215,0,0.3)' }}>
+              <p style={{ color: '#e0d4f7', fontSize: '14px', marginBottom: '12px' }}>
+                🔓 Load from save code:
+              </p>
+              <input
+                type="text"
+                value={loadCodeInput}
+                onChange={(e) => setLoadCodeInput(e.target.value)}
+                placeholder="Paste your save code here..."
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  background: 'rgba(13,2,33,0.8)',
+                  border: '2px solid #8b008b',
+                  borderRadius: '8px',
+                  color: '#e0d4f7',
+                  fontSize: '14px',
+                  marginBottom: '12px',
+                  boxSizing: 'border-box',
+                  fontFamily: 'monospace'
+                }}
+              />
+              <button onClick={handleLoadFromCode} style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #ff6b35, #ff8c61)',
+                color: '#fff', border: 'none', borderRadius: '8px',
+                cursor: 'pointer', fontSize: '14px', fontWeight: 'bold'
+              }}>
+                Load Game
+              </button>
+            </div>
+
+            <div style={{ paddingTop: '20px', borderTop: '1px solid rgba(255,215,0,0.3)' }}>
+              <button onClick={handleNewGame} style={{
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #555, #333)',
+                color: '#ff6b6b', border: '2px solid #ff6b6b', borderRadius: '8px',
+                cursor: 'pointer', fontSize: '14px', fontWeight: 'bold'
+              }}>
+                🗑️ Clear Progress & Start New Game
+              </button>
+            </div>
+
+            {saveMessage && (
+              <div style={{
+                marginTop: '16px',
+                padding: '12px',
+                background: 'rgba(76,175,80,0.2)',
+                border: '1px solid #4caf50',
+                borderRadius: '8px',
+                color: '#4caf50',
+                fontSize: '14px'
+              }}>
+                {saveMessage}
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="room-panel" style={{
           padding: '24px', 
           background: 'linear-gradient(135deg, rgba(26,11,46,0.95), rgba(45,27,61,0.95))',
@@ -718,6 +992,19 @@ const AppContent = () => {
           <h2 style={{ color: '#ff6b35', marginTop: 0, fontFamily: 'Creepster, cursive' }}>
             {ROOMS[currentRoom].name}
           </h2>
+          
+          <div className="room-panel-image" style={{
+            width: '100%',
+            height: '300px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            backgroundImage: `url('${ROOMS[currentRoom].cardImage}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            border: '2px solid #ff6b35',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
+          }} />
+          
           <p style={{ color: '#e0d4f7' }}>{ROOMS[currentRoom].description}</p>
           <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid rgba(255,107,53,0.3)' }}>
             <p style={{ color: '#9d7cc1', fontSize: '14px' }}>Available paths:</p>
