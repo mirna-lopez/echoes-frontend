@@ -186,11 +186,33 @@ const GameInterface = () => {
         @media (max-width: 768px) {
           .game-container { padding: 10px !important; }
           .game-header { padding: 16px 12px !important; }
-          .game-header h1 { font-size: 24px !important; }
+          .game-header h1 { 
+            font-size: 28px !important; 
+            margin-bottom: 16px !important;
+          }
+          .header-controls {
+            flex-direction: row !important;
+            width: 100% !important;
+          }
+          .header-controls button {
+            flex: 1 !important;
+            font-size: 12px !important;
+            padding: 10px 12px !important;
+          }
           .room-panel { padding: 16px !important; }
           .room-panel h2 { font-size: 18px !important; }
+          .room-panel-image { height: 200px !important; }
           .chat-box { height: 250px !important; }
-          .input-container { flex-direction: column !important; }
+          .input-container { 
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          .input-container input {
+            width: 100% !important;
+          }
+          .input-container button {
+            width: 100% !important;
+          }
         }
       `}</style>
 
@@ -203,26 +225,25 @@ const GameInterface = () => {
           background: 'linear-gradient(135deg, rgba(45,27,61,0.95), rgba(26,11,46,0.95))',
           borderRadius: '12px',
           border: '2px solid #ff6b35',
-          backdropFilter: 'blur(10px)',
-          position: 'relative'
+          backdropFilter: 'blur(10px)'
         }}>
           <h1 style={{
             color: '#ff6b35',
             fontSize: '48px',
             margin: 0,
             fontFamily: 'Creepster, cursive',
-            letterSpacing: '3px'
+            letterSpacing: '3px',
+            marginBottom: '0'
           }}>
             ECHOES OF THE ESTATE
           </h1>
 
           {/* Controls */}
-          <div style={{
-            position: 'absolute',
-            top: '24px',
-            right: '24px',
+          <div className="header-controls" style={{
             display: 'flex',
-            gap: '12px'
+            gap: '12px',
+            marginTop: '20px',
+            justifyContent: 'center'
           }}>
             <button
               onClick={() => setShowSaveMenu(!showSaveMenu)}
@@ -422,7 +443,7 @@ const GameInterface = () => {
             {ROOMS[currentRoom].name}
           </h2>
 
-          <div style={{
+          <div className="room-panel-image" style={{
             width: '100%',
             height: '300px',
             borderRadius: '8px',
