@@ -1,17 +1,7 @@
-/*═══════════════════════════════════════════════════════════════
- * GAME STATE CONTEXT - Central state management
- * 
- * This is the "brain" of the application. It manages:
- * - All game state (room, conversation, trust)
- * - Music/audio system
- * - Save/load functionality
- * - API communication
- * - Authentication
- * 
- * All components that need game data will use this context.
- * 
- * ═══════════════════════════════════════════════════════════════
- */
+// Game state manager - the brain of the app
+// Handles rooms, chat, music, saves, and auth
+// All components use this for game data
+//// TODO: Multiple endings based on final trust level
 
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { ROOMS, API_CONFIG } from '../data/rooms';
@@ -35,39 +25,40 @@ export const useGameState = () => {
  * GameStateProvider - Wraps the entire app
  */
 export const GameStateProvider = ({ children }) => {
-  // ═══ GAME STATE ═══
+  // GAME STATE 
   const [currentRoom, setCurrentRoom] = useState('entrance');
   const [conversationHistory, setConversationHistory] = useState([]);
   const [ghostTrust, setGhostTrust] = useState(0); // 0-100 trust meter
   const [isLoading, setIsLoading] = useState(false);
+  // TODO: maybe add inventory system later?
   
-  // ═══ AUTHENTICATION ═══
+  // AUTHENTICATION
   const [demoPassword, setDemoPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [demoServerStatus, setDemoServerStatus] = useState({ online: false, checked: false });
   
-  // ═══ AUDIO CONTROLS ═══
+  // AUDIO CONTROLS 
   const [isMusicMuted, setIsMusicMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [musicStarted, setMusicStarted] = useState(false);
   
-  // ═══ AUDIO REFS (for music playback) ═══
-  const audioRef = useRef(null); // Current room music
-  const welcomeMusicRef = useRef(null); // Welcome screen music
+  //  AUDIO REFS (for music playback) 
+  const audioRef = useRef(null);  // Current room music
+  const welcomeMusicRef =  useRef(null); // Welcome screen music
 
-  // ═══ CHECK SERVER ON MOUNT ═══
+  //  CHECK SERVER ON MOUNT
   useEffect(() => {
     checkDemoServer();
   }, []);
 
-  // ═══ WELCOME MUSIC MANAGEMENT ═══
+  //WELCOME MUSIC MANAGEMENT 
   useEffect(() => {
     if (!isAuthenticated && musicStarted) {
       welcomeMusicRef.current = new Audio('/music/cryptic-sorrow.mp3');
       welcomeMusicRef.current.loop = true;
       welcomeMusicRef.current.volume = musicVolume;
       
-      const playWelcomeMusic = async () => {
+      const  playWelcomeMusic = async () => {
         try {
           await welcomeMusicRef.current.play();
         } catch (error) {
@@ -84,9 +75,9 @@ export const GameStateProvider = ({ children }) => {
         }
       };
     }
-  }, [isAuthenticated, musicVolume, musicStarted]);
+  }, [isAuthenticated,  musicVolume, musicStarted]);
 
-  // ═══ ROOM MUSIC MANAGEMENT ═══
+  //  ROOM MUSIC MANAGEMENT 
   useEffect(() => {
     const playRoomMusic = async () => {
       const musicUrl = ROOMS[currentRoom].music;
@@ -140,19 +131,18 @@ export const GameStateProvider = ({ children }) => {
     }
   }, [currentRoom, isAuthenticated, musicVolume, isMusicMuted]);
 
-  // ═══ VOLUME CONTROL ═══
+  // VOLUME CONTROL
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMusicMuted ? 0 : musicVolume;
     }
     if (welcomeMusicRef.current) {
-      welcomeMusicRef.current.volume = isMusicMuted ? 0 : musicVolume;
+      welcomeMusicRef.current.volume =  isMusicMuted ? 0 : musicVolume;
     }
   }, [isMusicMuted, musicVolume]);
 
-  // ═══════════════════════════════════════════════════════════════
+  // 
   // API FUNCTIONS
-  // ═══════════════════════════════════════════════════════════════
 
   /**
    * Check if demo server is online
@@ -161,7 +151,7 @@ export const GameStateProvider = ({ children }) => {
     try {
       const response = await fetch(`${API_CONFIG.DEMO_SERVER}/health`);
       if (response.ok) {
-        const data = await response.json();
+        const data = await  response.json();
         setDemoServerStatus({ online: true, checked: true, ...data });
       } else {
         setDemoServerStatus({ online: false, checked: true });
@@ -193,10 +183,8 @@ export const GameStateProvider = ({ children }) => {
     }
   };
 
-  // ═══════════════════════════════════════════════════════════════
+  // 
   // GAME ACTIONS
-  // ═══════════════════════════════════════════════════════════════
-
   /**
    * Add message to conversation history
    */
@@ -221,10 +209,8 @@ export const GameStateProvider = ({ children }) => {
     setGhostTrust(prev => Math.max(0, Math.min(100, prev + amount)));
   };
 
-  // ═══════════════════════════════════════════════════════════════
+  
   // SAVE/LOAD SYSTEM
-  // ═══════════════════════════════════════════════════════════════
-
   /**
    * Save game to browser localStorage (auto-save)
    */
@@ -269,9 +255,9 @@ export const GameStateProvider = ({ children }) => {
   /**
    * Load game from save code
    */
-  const loadGameFromCode = (code) => {
+  const loadGameFromCode =  (code) => {
     try {
-      const decoded = atob(code);
+      const decoded =  atob(code);
       const gameState = JSON.parse(decoded);
       setCurrentRoom(gameState.currentRoom);
       setConversationHistory(gameState.conversationHistory || []);
@@ -292,18 +278,16 @@ export const GameStateProvider = ({ children }) => {
     setGhostTrust(0);
   };
 
-  // ═══════════════════════════════════════════════════════════════
+  
   // AUDIO CONTROLS
-  // ═══════════════════════════════════════════════════════════════
 
   const startMusic = () => setMusicStarted(true);
   const toggleMute = () => setIsMusicMuted(prev => !prev);
   const changeVolume = (newVolume) => setMusicVolume(newVolume);
 
-  // ═══════════════════════════════════════════════════════════════
+ 
   // PROVIDE ALL STATE & FUNCTIONS TO CHILDREN
-  // ═══════════════════════════════════════════════════════════════
-
+ 
   const value = {
     // State
     currentRoom,
@@ -334,7 +318,7 @@ export const GameStateProvider = ({ children }) => {
   };
 
   return (
-    <GameStateContext.Provider value={value}>
+    <GameStateContext.Provider  value={value}>
       {children}
     </GameStateContext.Provider>
   );

@@ -1,9 +1,7 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * Validates password with backend before allowing game access
- * Shows hint and error messages
- * ═══════════════════════════════════════════════════════════════
- */
+/* Password check modal
+Shows before game access, validates with backend
+Includes hint and error messages
+*/
 
 import React, { useState } from 'react';
 import { useGameState } from '../contexts/GameStateContext';
