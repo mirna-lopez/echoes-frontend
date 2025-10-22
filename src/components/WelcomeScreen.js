@@ -1,11 +1,6 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * WELCOME SCREEN - Initial landing page
- * 
- * Shows atmospheric title screen with pulsing animation
- * User clicks to proceed to password modal
- * ═══════════════════════════════════════════════════════════════
- */
+// Welcome screen - first thing users see
+// Has title and enter button with pulsing animation
+
 import React from 'react';
 
 const WelcomeScreen = ({ onEnter }) => {

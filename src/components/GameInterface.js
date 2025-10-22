@@ -1,16 +1,6 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * GAME INTERFACE - Main game screen
- * 
- * The complete interactive game with:
- * - Room exploration and navigation
- * - Chat with Eleanor (AI)
- * - Ghost trust meter
- * - Save/load system
- * - Music controls
- * 
- * ═══════════════════════════════════════════════════════════════
- */
+// Main game screen - where everything happens
+// Has chat, room navigation, trust meter, save system
+//TODO: add achievement system later
 
 import React, { useState, useEffect } from 'react';
 import { useGameState } from '../contexts/GameStateContext';
@@ -66,6 +56,18 @@ const GameInterface = () => {
   const [saveCode, setSaveCode] = useState('');
   const [loadCodeInput, setLoadCodeInput] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Update background when room changes
   useEffect(() => {
@@ -201,7 +203,9 @@ const GameInterface = () => {
           }
           .room-panel { padding: 16px !important; }
           .room-panel h2 { font-size: 18px !important; }
-          .room-panel-image { height: 200px !important; }
+          .room-panel-image { 
+            height: 200px !important;
+          }
           .chat-box { height: 250px !important; }
           .input-container { 
             flex-direction: column !important;
@@ -209,9 +213,11 @@ const GameInterface = () => {
           }
           .input-container input {
             width: 100% !important;
+            box-sizing: border-box !important;
           }
           .input-container button {
             width: 100% !important;
+            box-sizing: border-box !important;
           }
         }
       `}</style>
@@ -448,7 +454,7 @@ const GameInterface = () => {
             height: '300px',
             borderRadius: '8px',
             marginBottom: '20px',
-            backgroundImage: `url('${ROOMS[currentRoom].cardImage}')`,
+            backgroundImage: `url('${isMobile ? ROOMS[currentRoom].background : ROOMS[currentRoom].cardImage}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             border: '2px solid #ff6b35',
@@ -585,7 +591,8 @@ const GameInterface = () => {
               borderRadius: '10px',
               color: '#e0d4f7',
               fontSize: '15px',
-              backdropFilter: 'blur(10px)'
+              backdropFilter: 'blur(10px)',
+              boxSizing: 'border-box'
             }}
           />
           <button
@@ -599,7 +606,8 @@ const GameInterface = () => {
               borderRadius: '10px',
               cursor: isLoading ? 'not-allowed' : 'pointer',
               fontSize: '15px',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              boxSizing: 'border-box'
             }}
           >
             {isLoading ? 'Summoning...' : 'Send'}
