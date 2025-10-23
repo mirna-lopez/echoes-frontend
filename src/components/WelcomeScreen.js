@@ -1,9 +1,14 @@
 // Welcome screen - first thing users see
 // Has title and enter button with pulsing animation
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { SUPPORTED_LANGUAGES } from '../data/translations';
 
 const WelcomeScreen = ({ onEnter }) => {
+  const { currentLanguage, changeLanguage, t } = useLanguage();
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+
   useEffect(() => {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
@@ -61,8 +66,97 @@ const WelcomeScreen = ({ onEnter }) => {
             padding: 20px 48px !important;
             font-size: 20px !important;
           }
+          .language-selector-welcome {
+            top: 10px !important;
+            right: 10px !important;
+          }
+          .language-button-welcome {
+            padding: 10px 16px !important;
+            font-size: 12px !important;
+          }
         }
       `}</style>
+
+      {/* Language Selector */}
+      <div className="language-selector-welcome" style={{
+        position: 'absolute',
+        top: '20px',
+        right: '20px',
+        zIndex: 1000
+      }}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowLanguageMenu(!showLanguageMenu);
+          }}
+          className="language-button-welcome"
+          style={{
+            padding: '12px 20px',
+            background: 'linear-gradient(135deg, rgba(45,27,61,0.9), rgba(26,11,46,0.9))',
+            color: '#ffd700',
+            border: '2px solid #ffd700',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: 'bold',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
+          }}
+        >
+          🌐 {t('languageName')}
+        </button>
+
+        {showLanguageMenu && (
+          <div style={{
+            position: 'absolute',
+            top: '60px',
+            right: 0,
+            background: 'linear-gradient(135deg, rgba(13,2,33,0.98), rgba(26,11,46,0.98))',
+            border: '2px solid #ffd700',
+            borderRadius: '12px',
+            padding: '12px',
+            minWidth: '200px',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+            zIndex: 1001
+          }}>
+            {SUPPORTED_LANGUAGES.map(lang => (
+              <button
+                key={lang.code}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  changeLanguage(lang.code);
+                  setShowLanguageMenu(false);
+                }}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginBottom: '8px',
+                  background: currentLanguage === lang.code 
+                    ? 'linear-gradient(135deg, #ff6b35, #ff8c61)' 
+                    : 'rgba(45,27,61,0.5)',
+                  color: currentLanguage === lang.code ? '#fff' : '#e0d4f7',
+                  border: currentLanguage === lang.code 
+                    ? '2px solid #ffd700' 
+                    : '1px solid rgba(255,215,0,0.3)',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  textAlign: 'left',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <span style={{ fontSize: '20px' }}>{lang.flag}</span>
+                <span>{lang.name}</span>
+                {currentLanguage === lang.code && <span style={{ marginLeft: 'auto' }}>✓</span>}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="initial-container" style={{
         textAlign: 'center',
@@ -83,7 +177,7 @@ const WelcomeScreen = ({ onEnter }) => {
           letterSpacing: '4px',
           marginTop: 0
         }}>
-          ECHOES OF THE ESTATE
+          {t('welcome.title')}
         </h1>
 
         <p className="initial-subtitle" style={{
@@ -93,7 +187,7 @@ const WelcomeScreen = ({ onEnter }) => {
           letterSpacing: '2px',
           marginBottom: '48px'
         }}>
-          Eleanor's Mansion Awaits...
+          {t('welcome.subtitle')}
         </p>
 
         <button 
@@ -122,7 +216,7 @@ const WelcomeScreen = ({ onEnter }) => {
             e.target.style.boxShadow = '0 10px 30px rgba(255,107,53,0.5)';
           }}
         >
-          APPROACH THE MANSION
+          {t('welcome.enterButton')}
         </button>
       </div>
     </div>

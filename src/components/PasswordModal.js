@@ -5,9 +5,11 @@ Includes hint and error messages
 
 import React, { useState } from 'react';
 import { useGameState } from '../contexts/GameStateContext';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const PasswordModal = ({ onSuccess, show }) => {
   const { verifyPassword } = useGameState();
+  const { t } = useLanguage();
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
@@ -17,7 +19,7 @@ const PasswordModal = ({ onSuccess, show }) => {
    */
   const handleSubmit = async () => {
     if (!password.trim()) {
-      setError('Please enter a password');
+      setError(t('password.errorEmpty'));
       return;
     }
     
@@ -28,7 +30,7 @@ const PasswordModal = ({ onSuccess, show }) => {
     if (result.success) {
       onSuccess(); // Proceed to game
     } else {
-      setError(result.error);
+      setError(result.error === 'Unable to connect' ? t('password.errorConnect') : t('password.errorMessage'));
       setPassword(''); // Clear for retry
     }
     
@@ -106,7 +108,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           letterSpacing: '4px', 
           marginBottom: '12px'
         }}>
-          ECHOES OF THE ESTATE
+          {t('password.title')}
         </h2>
 
         {/* Subtitle */}
@@ -118,7 +120,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           marginBottom: '24px', 
           textTransform: 'uppercase'
         }}>
-          The Haunted Mansion Awaits
+          {t('password.subtitle')}
         </p>
 
         {/* Description */}
@@ -129,7 +131,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           fontFamily: 'Special Elite, cursive', 
           fontSize: '15px'
         }}>
-          Eleanor's melancholic presence lingers in every shadow. Enter the password to unlock the mysteries.
+          {t('password.description')}
         </p>
 
         {/* Password Input */}
@@ -138,7 +140,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && handleSubmit()}
-          placeholder="Enter password..." 
+          placeholder={t('password.placeholder')}
           disabled={isVerifying}
           className="password-input"
           style={{
@@ -189,7 +191,7 @@ const PasswordModal = ({ onSuccess, show }) => {
             letterSpacing: '3px'
           }}
         >
-          {isVerifying ? 'SUMMONING...' : 'UNLOCK THE GATES'}
+          {isVerifying ? t('password.loadingButton') : t('password.submitButton')}
         </button>
 
         {/* Hint */}
@@ -201,7 +203,7 @@ const PasswordModal = ({ onSuccess, show }) => {
           fontFamily: 'monospace', 
           opacity: 0.8
         }}>
-          Hint: echoes + the current year
+          {t('password.hint')}
         </p>
       </div>
     </div>
