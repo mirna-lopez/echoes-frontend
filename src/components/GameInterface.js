@@ -169,16 +169,22 @@ const GameInterface = () => {
     }
   };
 
-  return (
+ return (
     <div style={{
-      minHeight: '100vh',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      width: '100vw',
+      height: '100vh',
       background: `linear-gradient(rgba(0,0,0,0.5), rgba(13,2,33,0.7)), url('${backgroundImage}')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      backgroundAttachment: 'fixed',
-      padding: '20px',
       fontFamily: 'Special Elite, cursive',
-      transition: 'background-image 0.5s ease-in-out'
+      transition: 'background-image 0.5s ease-in-out',
+      overflowY: 'auto',
+      overflowX: 'hidden'
     }}>
       {/* Google Fonts */}
       <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Special+Elite&display=swap" rel="stylesheet" />
@@ -186,7 +192,7 @@ const GameInterface = () => {
       {/* Responsive Styles */}
       <style>{`
         @media (max-width: 768px) {
-          .game-container { padding: 10px !important; }
+          .game-container { padding: 10px 10px !important; }
           .game-header { padding: 16px 12px !important; }
           .game-header h1 { 
             font-size: 28px !important; 
@@ -222,7 +228,11 @@ const GameInterface = () => {
         }
       `}</style>
 
-      <div className="game-container" style={{ maxWidth: '1000px', margin: '0 auto' }}>
+      <div className="game-container" style={{ 
+        maxWidth: '1000px', 
+        margin: '0 auto',
+        padding: '20px'
+      }}>
         {/* Header */}
         <header className="game-header" style={{
           textAlign: 'center',
