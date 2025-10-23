@@ -5,6 +5,7 @@ An atmospheric, AI-powered ghost story game built with React. Explore a haunted 
 ## 🎮 Live Demo
 
 **➡️ [Play Now](https://echoes-estate-game.netlify.app) ⬅️**
+**Password:** `echoes2025`
 
 ## 🎮 Features
 
