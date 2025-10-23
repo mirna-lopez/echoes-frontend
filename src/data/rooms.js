@@ -2,26 +2,29 @@
 // TODO: Add more rooms later
 // TODO: Implement collectible system (keys, letters) — each room should define its own items.
 
+// Room names and descriptions are now translated via translations.js
+// This file keeps the technical data (IDs, connections, URLs)
+
 export const ROOMS = {
   entrance: {
-    id:  'entrance',
-    name: 'Grand Entrance Hall',
-    description:  'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
+    id: 'entrance',
+    name: 'Grand Entrance Hall', 
+    description: 'Thunder rumbles outside as rain lashes against cracked stained glass windows. A grand staircase spirals into darkness above.',
     connections: ['library', 'dining', 'garden'],
     music: '/music/thunder-dreams.mp3',
     background: 'https://i.imgur.com/U0t9EZn.png',
     cardImage: 'https://i.imgur.com/U0t9EZn.png'
-     // NOTE: Might link entrance to attic once secret mechanics are added
+    // NOTE: Might link entrance to attic once secret mechanics are added
   },
   
   library: {
     id: 'library',
     name: 'Forbidden Library',
-    description:  'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
+    description: 'Ancient tomes line towering shelves, their leather bindings cracked with age. The air smells of decay and old secrets.',
     connections: ['entrance', 'study'],
     music: '/music/the-chamber.mp3',
     background: 'https://i.imgur.com/JWWK66y.png',
-    cardImage:  'https://i.imgur.com/gtYhFrc.png'
+    cardImage: 'https://i.imgur.com/gtYhFrc.png'
   },
   
   dining: {
@@ -49,7 +52,7 @@ export const ROOMS = {
     name: "Eleanor's Study",
     description: 'Personal journals lie scattered across an aged desk. Ink-stained letters reveal fragments of a melancholic past.',
     connections: ['library'],
-    music:  '/music/atlantean-twilight.mp3',
+    music: '/music/atlantean-twilight.mp3',
     background: 'https://i.imgur.com/ljUWOqY.png',
     cardImage: 'https://i.imgur.com/837mjXI.png'
   },
@@ -69,5 +72,5 @@ export const ROOMS = {
  * API Configuration
  */
 export const API_CONFIG = {
-  DEMO_SERVER:  'http://localhost:3001' // TODO: update for demo
+  DEMO_SERVER: 'http://localhost:3001' // TODO: update for demo
 };

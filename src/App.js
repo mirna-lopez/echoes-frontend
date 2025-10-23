@@ -3,6 +3,7 @@
  */
 
 import React, { useState } from 'react';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { GameStateProvider, useGameState } from './contexts/GameStateContext';
 import WelcomeScreen from './components/WelcomeScreen';
 import PasswordModal from './components/PasswordModal';
@@ -40,9 +41,11 @@ const AppContent = () => {
 
 function App() {
   return (
-    <GameStateProvider>
-      <AppContent />
-    </GameStateProvider>
+    <LanguageProvider>
+      <GameStateProvider>
+        <AppContent />
+      </GameStateProvider>
+    </LanguageProvider>
   );
 }
 
