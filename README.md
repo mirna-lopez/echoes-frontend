@@ -2,9 +2,14 @@
 
 An atmospheric, AI-powered ghost story game built with React. Explore a haunted mansion, communicate with Eleanor Ashford's melancholic spirit, and uncover the mysteries of the estate.
 
+## 🎮 Live Demo
+
+**➡️ [Play Now](https://echoes-estate-game.netlify.app) ⬅️**
+
 ## 🎮 Features
 
 - **Interactive Story**: Navigate through 6 atmospheric rooms in a haunted mansion
+- **Multi-Language AI**: Eleanor speaks 6 languages (English, Spanish, Portuguese, French, Hindi, Japanese) with full personality localization
 - **AI-Powered Ghost**: Chat with Eleanor using Claude AI for dynamic, contextual responses
 - **Trust System**: Build relationship with the ghost through your interactions
 - **Atmospheric Audio**: Room-specific music with smooth transitions and fade effects
@@ -14,6 +19,23 @@ An atmospheric, AI-powered ghost story game built with React. Explore a haunted 
 - **Responsive Design**: Optimized for desktop and mobile devices
 - **Typewriter Effect**: Immersive text reveal for ghost messages
 
+## 🌍 Multi-Language Support
+
+**Eleanor speaks 6 languages fluently while maintaining her Victorian ghost personality:**
+
+- 🇺🇸 English
+- 🇪🇸 Spanish  
+- 🇵🇹 Portuguese
+- 🇫🇷 French
+- 🇮🇳 Hindi
+- 🇯🇵 Japanese
+
+**Technical Implementation:**
+- Not just translation - full personality localization
+- AI maintains Victorian speech patterns in all languages
+- Culturally appropriate responses for each language
+- Seamless language switching without losing conversation context
+ 
 ## 🏗️ Architecture
 
 ### Project Structure
@@ -139,6 +161,12 @@ Save codes encode:
 - Increases through empathetic dialogue
 - Keywords like "sorry", "help", "comfort" increase trust by 5%
 - Affects Eleanor's responses (higher trust = more revealing)
+ 
+ ### Multi-Language AI Conversations
+- Switch between 6 languages at any time
+- Eleanor maintains consistent Victorian personality across all languages
+- Trust system works identically in all languages
+- Cultural adaptation for appropriate ghost responses 
 
 ### Room Navigation
 - 6 interconnected rooms
@@ -285,6 +313,7 @@ http://creativecommons.org/licenses/by/4.0/
 
 Email: lopez.mirna2807@gmail.com
 Linkedin: https://www.linkedin.com/in/mirna-lopez/
+GitHub: https://github.com/mirna-lopez
 
 ---
 
