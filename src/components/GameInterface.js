@@ -37,12 +37,14 @@ const GameInterface = () => {
     ROOMS,
     conversationHistory,
     ghostTrust,
+    achievements,
     isLoading,
     demoPassword,
     setIsLoading,
     addMessage,
     moveToRoom,
     adjustTrust,
+    unlockAchievement,
     toggleMute,
     isMusicMuted,
     saveGameToLocalStorage,
@@ -58,11 +60,16 @@ const GameInterface = () => {
   const [backgroundImage, setBackgroundImage] = useState(ROOMS.entrance.background);
   const [showSaveMenu, setShowSaveMenu] = useState(false);
   const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
   const [saveCode, setSaveCode] = useState('');
   const [loadCodeInput, setLoadCodeInput] = useState('');
   const [saveMessage, setSaveMessage] = useState('');
   const [isMobile, setIsMobile] = useState(false);
   const [translatedHistory, setTranslatedHistory] = useState([]);
+  const [prevUnlockedCount, setPrevUnlockedCount] = useState(
+    Object.values(achievements || {}).filter(a => a.unlocked).length
+  );
+  const [achievementToast, setAchievementToast] = useState(null);
 
   // Helper to get language name for AI prompt
   const getLanguageName = (code) => {
@@ -76,6 +83,27 @@ const GameInterface = () => {
     };
     return names[code] || 'English';
   };
+
+  useEffect(() => {
+    const unlocked = Object.values(achievements || {}).filter(a => a.unlocked);
+    const unlockedCount = unlocked.length;
+    if (unlockedCount > prevUnlockedCount) {
+      const latest = unlocked[unlocked.length - 1];
+      if (latest) {
+        addMessage('system', `Achievement unlocked: ${latest.name}`);
+        setAchievementToast(latest.name);
+        setTimeout(() => {
+          setAchievementToast(null);
+        }, 3000);
+      }
+      setPrevUnlockedCount(unlockedCount);
+    }
+  }, [achievements, addMessage, prevUnlockedCount]);
+
+  useEffect(() => {
+    const unlocked = Object.values(achievements || {}).filter(a => a.unlocked).length;
+    setPrevUnlockedCount(unlocked);
+  }, []);
 
   // Detect mobile on mount and resize
   useEffect(() => {
@@ -98,7 +126,7 @@ const GameInterface = () => {
   // Auto-save on state changes (now includes language)
   useEffect(() => {
     saveGameToLocalStorage();
-  }, [currentRoom, ghostTrust, conversationHistory, saveGameToLocalStorage]);
+  }, [currentRoom, ghostTrust, conversationHistory, achievements, saveGameToLocalStorage]);
 
   // Load saved game on mount
   useEffect(() => {
@@ -108,7 +136,6 @@ const GameInterface = () => {
     } else {
       addMessage('system', t('systemMessages.welcome'));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Save/Load functions
@@ -175,6 +202,7 @@ const GameInterface = () => {
       if (response.ok) {
         const data = await response.json();
         addMessage('assistant', data.message);
+        unlockAchievement('firstConversation');
         
         // Adjust trust based on message content
          const lowerMessage = userMessage.toLowerCase();
@@ -251,7 +279,7 @@ const GameInterface = () => {
     moveToRoom(roomId);
   };
 
- return (
+  return (
     <div style={{
       position: 'fixed',
       top: 0,
@@ -316,6 +344,31 @@ const GameInterface = () => {
         margin: '0 auto',
         padding: '20px'
       }}>
+        {achievementToast && (
+          <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            zIndex: 2000,
+            background: 'linear-gradient(135deg, rgba(76,175,80,0.95), rgba(56,142,60,0.95))',
+            borderRadius: '10px',
+            padding: '12px 18px',
+            border: '2px solid #ffd700',
+            boxShadow: '0 6px 18px rgba(0,0,0,0.6)',
+            color: '#fff',
+            fontSize: '14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ fontFamily: 'Creepster, cursive', fontSize: '18px', color: '#ffd700' }}>
+              ✦
+            </span>
+            <span>
+              Achievement unlocked: <strong>{achievementToast}</strong>
+            </span>
+          </div>
+        )}
         {/* Header */}
         <header className="game-header" style={{
           textAlign: 'center',
@@ -375,6 +428,22 @@ const GameInterface = () => {
               }}
             >
               {t('header.saveLoadButton')}
+            </button>
+
+            <button
+              onClick={() => setShowAchievements(!showAchievements)}
+              style={{
+                padding: '12px 20px',
+                background: 'linear-gradient(135deg, rgba(139,0,139,0.8), rgba(75,0,130,0.8))',
+                color: '#ffd700',
+                border: '2px solid #8b008b',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: 'bold'
+              }}
+            >
+              Achievements
             </button>
 
             {/* Language Button */}
@@ -449,6 +518,57 @@ const GameInterface = () => {
             </div>
           </div>
         </header>
+
+        {showAchievements && (
+          <div style={{
+            padding: '24px',
+            background: 'linear-gradient(135deg, rgba(13,2,33,0.98), rgba(26,11,46,0.98))',
+            borderRadius: '12px',
+            marginBottom: '24px',
+            border: '2px solid #ffd700',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <h3 style={{ color: '#ffd700', marginTop: 0, fontFamily: 'Creepster, cursive' }}>
+              Achievements
+            </h3>
+            <div>
+              {Object.values(achievements || {}).map(achievement => (
+                <div
+                  key={achievement.id}
+                  style={{
+                    padding: '12px',
+                    marginBottom: '12px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255,215,0,0.3)',
+                    background: achievement.unlocked
+                      ? 'rgba(76,175,80,0.15)'
+                      : 'rgba(45,27,61,0.6)'
+                  }}
+                >
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '4px'
+                  }}>
+                    <span style={{ color: '#ffd700', fontWeight: 'bold' }}>
+                      {achievement.name}
+                    </span>
+                    <span style={{
+                      fontSize: '12px',
+                      color: achievement.unlocked ? '#4caf50' : '#9d7cc1'
+                    }}>
+                      {achievement.unlocked ? 'Unlocked' : 'Locked'}
+                    </span>
+                  </div>
+                  <div style={{ color: '#e0d4f7', fontSize: '13px' }}>
+                    {achievement.description}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Save Menu */}
         {showSaveMenu && (

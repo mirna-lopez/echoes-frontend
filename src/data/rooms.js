@@ -72,5 +72,5 @@ export const ROOMS = {
  * API Configuration
  */
 export const API_CONFIG = {
-  DEMO_SERVER:  'https://echoes-estate-backend.onrender.com'
+  DEMO_SERVER:  'http://localhost:3001'
 };
