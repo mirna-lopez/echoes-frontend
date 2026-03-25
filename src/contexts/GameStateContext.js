@@ -6,6 +6,37 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { ROOMS, API_CONFIG } from '../data/rooms';
 
+const INITIAL_ACHIEVEMENTS = {
+  firstConversation: {
+    id: 'firstConversation',
+    name: 'First Contact',
+    description: 'Have your first conversation with Eleanor.',
+    unlocked: false,
+    unlockedAt: null
+  },
+  trust50: {
+    id: 'trust50',
+    name: 'Flicker of Trust',
+    description: 'Raise Eleanor\'s trust to at least 50%.',
+    unlocked: false,
+    unlockedAt: null
+  },
+  trust100: {
+    id: 'trust100',
+    name: 'Unbroken Bond',
+    description: 'Reach 100% trust with Eleanor.',
+    unlocked: false,
+    unlockedAt: null
+  },
+  allRoomsVisited: {
+    id: 'allRoomsVisited',
+    name: 'Every Whispering Room',
+    description: 'Visit every room in the estate at least once.',
+    unlocked: false,
+    unlockedAt: null
+  }
+};
+
 // Create the context
 const GameStateContext = createContext();
 
@@ -31,17 +62,19 @@ export const GameStateProvider = ({ children }) => {
   const [ghostTrust, setGhostTrust] = useState(0); // 0-100 trust meter
   const [isLoading, setIsLoading] = useState(false);
   // TODO: maybe add inventory system later?
-  
+  const [achievements, setAchievements] = useState(() => INITIAL_ACHIEVEMENTS);
+  const [visitedRooms, setVisitedRooms] = useState(['entrance']);
+
   // AUTHENTICATION
   const [demoPassword, setDemoPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [demoServerStatus, setDemoServerStatus] = useState({ online: false, checked: false });
-  
+
   // AUDIO CONTROLS 
   const [isMusicMuted, setIsMusicMuted] = useState(false);
   const [musicVolume, setMusicVolume] = useState(0.3);
   const [musicStarted, setMusicStarted] = useState(false);
-  
+
   //  AUDIO REFS (for music playback) 
   const audioRef = useRef(null);  // Current room music
   const welcomeMusicRef =  useRef(null); // Welcome screen music
@@ -192,6 +225,23 @@ export const GameStateProvider = ({ children }) => {
     setConversationHistory(prev => [...prev, { role, content }]);
   };
 
+  const unlockAchievement = (id) => {
+    setAchievements(prev => {
+      const existing = prev[id];
+      if (!existing || existing.unlocked) {
+        return prev;
+      }
+      return {
+        ...prev,
+        [id]: {
+          ...existing,
+          unlocked: true,
+          unlockedAt: new Date().toISOString()
+        }
+      };
+    });
+  };
+
   /**
    * Move player to a new room
    */
@@ -199,6 +249,17 @@ export const GameStateProvider = ({ children }) => {
     if (ROOMS[roomId]) {
       setCurrentRoom(roomId);
       addMessage('system', `You moved to the ${ROOMS[roomId].name}.`);
+      setVisitedRooms(prev => {
+        if (prev.includes(roomId)) {
+          return prev;
+        }
+        const updated = [...prev, roomId];
+        const allVisited = Object.keys(ROOMS).every(id => updated.includes(id));
+        if (allVisited) {
+          unlockAchievement('allRoomsVisited');
+        }
+        return updated;
+      });
     }
   };
 
@@ -207,6 +268,12 @@ export const GameStateProvider = ({ children }) => {
    */
   const adjustTrust = (amount) => {
     setGhostTrust(prev => Math.max(0, Math.min(100, prev + amount)));
+    if (amount > 0 && ghostTrust + amount >= 50) {
+      unlockAchievement('trust50');
+    }
+    if (amount > 0 && ghostTrust + amount >= 100) {
+      unlockAchievement('trust100');
+    }
   };
 
   
@@ -219,6 +286,8 @@ export const GameStateProvider = ({ children }) => {
       currentRoom,
       conversationHistory,
       ghostTrust,
+      achievements,
+      visitedRooms,
       timestamp: new Date().toISOString()
     };
     localStorage.setItem('echoesEstateProgress', JSON.stringify(gameState));
@@ -234,6 +303,19 @@ export const GameStateProvider = ({ children }) => {
       setCurrentRoom(gameState.currentRoom);
       setConversationHistory(gameState.conversationHistory || []);
       setGhostTrust(gameState.ghostTrust || 0);
+      if (gameState.achievements) {
+        setAchievements(prev => {
+          const merged = {};
+          Object.keys(INITIAL_ACHIEVEMENTS).forEach(id => {
+            merged[id] = {
+              ...INITIAL_ACHIEVEMENTS[id],
+              ...(gameState.achievements[id] || {})
+            };
+          });
+          return merged;
+        });
+      }
+      setVisitedRooms(gameState.visitedRooms || ['entrance']);
       return true;
     }
     return false;
@@ -247,6 +329,8 @@ export const GameStateProvider = ({ children }) => {
       currentRoom,
       conversationHistory: conversationHistory.slice(-20),
       ghostTrust,
+      achievements,
+      visitedRooms,
       timestamp: new Date().toISOString()
     };
     return btoa(JSON.stringify(gameState));
@@ -262,6 +346,19 @@ export const GameStateProvider = ({ children }) => {
       setCurrentRoom(gameState.currentRoom);
       setConversationHistory(gameState.conversationHistory || []);
       setGhostTrust(gameState.ghostTrust || 0);
+      if (gameState.achievements) {
+        setAchievements(prev => {
+          const merged = {};
+          Object.keys(INITIAL_ACHIEVEMENTS).forEach(id => {
+            merged[id] = {
+              ...INITIAL_ACHIEVEMENTS[id],
+              ...(gameState.achievements[id] || {})
+            };
+          });
+          return merged;
+        });
+      }
+      setVisitedRooms(gameState.visitedRooms || ['entrance']);
       return { success: true };
     } catch (error) {
       return { success: false, error: 'Invalid save code' };
@@ -276,6 +373,8 @@ export const GameStateProvider = ({ children }) => {
     setCurrentRoom('entrance');
     setConversationHistory([]);
     setGhostTrust(0);
+    setAchievements(INITIAL_ACHIEVEMENTS);
+    setVisitedRooms(['entrance']);
   };
 
   
@@ -293,6 +392,8 @@ export const GameStateProvider = ({ children }) => {
     currentRoom,
     conversationHistory,
     ghostTrust,
+    achievements,
+    visitedRooms,
     isLoading,
     demoPassword,
     isAuthenticated,
@@ -306,6 +407,7 @@ export const GameStateProvider = ({ children }) => {
     addMessage,
     moveToRoom,
     adjustTrust,
+    unlockAchievement,
     verifyPassword,
     toggleMute,
     changeVolume,
