@@ -103,6 +103,7 @@ const GameInterface = () => {
   useEffect(() => {
     const unlocked = Object.values(achievements || {}).filter(a => a.unlocked).length;
     setPrevUnlockedCount(unlocked);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Detect mobile on mount and resize
@@ -136,6 +137,7 @@ const GameInterface = () => {
     } else {
       addMessage('system', t('systemMessages.welcome'));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Save/Load functions
