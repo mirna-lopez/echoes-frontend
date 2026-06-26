@@ -12,18 +12,14 @@ export const translations = {
       enterButton: "APPROACH THE MANSION",
     },
     
-    // Password Modal
-    password: {
+    // Name Entry Modal
+    nameEntry: {
       title: "ECHOES OF THE ESTATE",
       subtitle: "The Haunted Mansion Awaits",
-      description: "Eleanor's melancholic presence lingers in every shadow. Enter the password to unlock the mysteries.",
-      placeholder: "Enter password...",
-      submitButton: "UNLOCK THE GATES",
-      loadingButton: "SUMMONING...",
-      errorMessage: "Invalid password",
-      errorEmpty: "Please enter a password",
-      errorConnect: "Unable to connect",
-      hint: "Hint: echoes + the current year",
+      description: "Eleanor's melancholic presence lingers in every shadow. Who dares enter the estate?",
+      placeholder: "Enter your name...",
+      submitButton: "ENTER THE ESTATE",
+      errorEmpty: "Please enter your name",
     },
     
     // Game Interface - Header
@@ -124,17 +120,13 @@ export const translations = {
       enterButton: "ACÉRCATE A LA MANSIÓN",
     },
     
-    password: {
+    nameEntry: {
       title: "ECOS DE LA MANSIÓN",
       subtitle: "La Mansión Embrujada Aguarda",
-      description: "La presencia melancólica de Eleanor persiste en cada sombra. Ingresa la contraseña para desbloquear los misterios.",
-      placeholder: "Ingresa la contraseña...",
-      submitButton: "ABRIR LAS PUERTAS",
-      loadingButton: "INVOCANDO...",
-      errorMessage: "Contraseña inválida",
-      errorEmpty: "Por favor ingresa una contraseña",
-      errorConnect: "No se puede conectar",
-      hint: "Pista: echoes + el año actual",
+      description: "La presencia melancólica de Eleanor persiste en cada sombra. ¿Quién se atreve a entrar a la mansión?",
+      placeholder: "Ingresa tu nombre...",
+      submitButton: "ENTRAR A LA MANSIÓN",
+      errorEmpty: "Por favor ingresa tu nombre",
     },
     
     header: {
@@ -228,17 +220,13 @@ export const translations = {
       enterButton: "APROXIME-SE DA MANSÃO",
     },
     
-    password: {
+    nameEntry: {
       title: "ECOS DA MANSÃO",
       subtitle: "A Mansão Assombrada Aguarda",
-      description: "A presença melancólica de Eleanor permanece em cada sombra. Digite a senha para desbloquear os mistérios.",
-      placeholder: "Digite a senha...",
-      submitButton: "ABRIR OS PORTÕES",
-      loadingButton: "INVOCANDO...",
-      errorMessage: "Senha inválida",
-      errorEmpty: "Por favor digite uma senha",
-      errorConnect: "Não é possível conectar",
-      hint: "Dica: echoes + o ano atual",
+      description: "A presença melancólica de Eleanor permanece em cada sombra. Quem ousa entrar na mansão?",
+      placeholder: "Digite seu nome...",
+      submitButton: "ENTRAR NA MANSÃO",
+      errorEmpty: "Por favor digite seu nome",
     },
     
     header: {
@@ -332,17 +320,13 @@ export const translations = {
       enterButton: "APPROCHEZ DU MANOIR",
     },
     
-    password: {
+    nameEntry: {
       title: "ÉCHOS DU MANOIR",
       subtitle: "Le Manoir Hanté Attend",
-      description: "La présence mélancolique d'Eleanor persiste dans chaque ombre. Entrez le mot de passe pour déverrouiller les mystères.",
-      placeholder: "Entrez le mot de passe...",
-      submitButton: "OUVRIR LES PORTES",
-      loadingButton: "INVOCATION...",
-      errorMessage: "Mot de passe invalide",
-      errorEmpty: "Veuillez entrer un mot de passe",
-      errorConnect: "Impossible de se connecter",
-      hint: "Indice: echoes + l'année actuelle",
+      description: "La présence mélancolique d'Eleanor persiste dans chaque ombre. Qui ose entrer dans le manoir?",
+      placeholder: "Entrez votre nom...",
+      submitButton: "ENTRER DANS LE MANOIR",
+      errorEmpty: "Veuillez entrer votre nom",
     },
     
     header: {
@@ -436,17 +420,13 @@ export const translations = {
       enterButton: "हवेली के पास जाएं",
     },
     
-    password: {
+    nameEntry: {
       title: "हवेली की प्रतिध्वनि",
       subtitle: "भूतिया हवेली इंतजार कर रही है",
-      description: "एलेनोर की उदास उपस्थिति हर छाया में बनी रहती है। रहस्यों को खोलने के लिए पासवर्ड दर्ज करें।",
-      placeholder: "पासवर्ड दर्ज करें...",
-      submitButton: "दरवाजे खोलें",
-      loadingButton: "बुलाया जा रहा है...",
-      errorMessage: "अमान्य पासवर्ड",
-      errorEmpty: "कृपया एक पासवर्ड दर्ज करें",
-      errorConnect: "कनेक्ट करने में असमर्थ",
-      hint: "संकेत: echoes + वर्तमान वर्ष",
+      description: "एलेनोर की उदास उपस्थिति हर छाया में बनी रहती है। हवेली में प्रवेश करने का साहस किसमें है?",
+      placeholder: "अपना नाम दर्ज करें...",
+      submitButton: "हवेली में प्रवेश करें",
+      errorEmpty: "कृपया अपना नाम दर्ज करें",
     },
     
     header: {
@@ -541,17 +521,13 @@ export const translations = {
       enterButton: "屋敷に近づく",
     },
     
-    password: {
+    nameEntry: {
       title: "屋敷の残響",
       subtitle: "幽霊屋敷が待っています",
-      description: "エレノアの憂鬱な存在があらゆる影に残っています。謎を解き明かすためにパスワードを入力してください。",
-      placeholder: "パスワードを入力...",
-      submitButton: "門を開く",
-      loadingButton: "召喚中...",
-      errorMessage: "無効なパスワード",
-      errorEmpty: "パスワードを入力してください",
-      errorConnect: "接続できません",
-      hint: "ヒント：echoes + 今年",
+      description: "エレノアの憂鬱な存在があらゆる影に残っています。屋敷に入る勇気があるのは誰ですか？",
+      placeholder: "名前を入力...",
+      submitButton: "屋敷に入る",
+      errorEmpty: "名前を入力してください",
     },
     
     header: {

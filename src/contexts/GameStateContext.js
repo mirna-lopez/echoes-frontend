@@ -68,6 +68,7 @@ export const GameStateProvider = ({ children }) => {
   // AUTHENTICATION
   const [demoPassword, setDemoPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [playerName, setPlayerName] = useState('');
   const [demoServerStatus, setDemoServerStatus] = useState({ online: false, checked: false });
 
   // AUDIO CONTROLS 
@@ -194,26 +195,10 @@ export const GameStateProvider = ({ children }) => {
     }
   };
 
-  /**
-   * Verify user password with backend
-   */
-  const verifyPassword = async (password) => {
-    try {
-      const response = await fetch(`${API_CONFIG.DEMO_SERVER}/api/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setDemoPassword(password);
-        setIsAuthenticated(true);
-        return { success: true, data };
-      }
-      return { success: false, error: 'Invalid password' };
-    } catch (error) {
-      return { success: false, error: 'Unable to connect' };
-    }
+  const enterGame = (name) => {
+    setPlayerName(name);
+    setDemoPassword('echoes 2025');
+    setIsAuthenticated(true);
   };
 
   // 
@@ -397,6 +382,7 @@ export const GameStateProvider = ({ children }) => {
     isLoading,
     demoPassword,
     isAuthenticated,
+    playerName,
     demoServerStatus,
     isMusicMuted,
     musicVolume,
@@ -408,7 +394,7 @@ export const GameStateProvider = ({ children }) => {
     moveToRoom,
     adjustTrust,
     unlockAchievement,
-    verifyPassword,
+    enterGame,
     toggleMute,
     changeVolume,
     startMusic,

@@ -27,12 +27,7 @@ const AppContent = () => {
 
   // Show password modal
   if (showPasswordModal && !isAuthenticated) {
-    return (
-      <PasswordModal
-        show={true}
-        onSuccess={() => {}}
-      />
-    );
+    return <PasswordModal show={true} />;
   }
 
   // Show full game once authenticated
