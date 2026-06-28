@@ -197,7 +197,7 @@ export const GameStateProvider = ({ children }) => {
 
   const enterGame = (name) => {
     setPlayerName(name);
-    setDemoPassword('echoes 2025');
+    setDemoPassword('echoes2025');
     setIsAuthenticated(true);
   };
 
